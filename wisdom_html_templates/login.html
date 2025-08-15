@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Wisdom Compass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;700&family=PT+Sans:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#388E3C',
+                        secondary: '#9E9E9E',
+                        accent: '#D4AC0D',
+                        destructive: '#D32F2F',
+                        muted: '#E0E0E0',
+                        background: '#F5F5DC',
+                        foreground: '#240F0F',
+                        card: '#F5F5F0',
+                        border: '#CCCCCC'
+                    },
+                    fontFamily: {
+                        'headline': ['Alegreya', 'serif'],
+                        'body': ['PT Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .philosophy-bg {
+            background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+        }
+
+        .form-input:focus {
+            box-shadow: 0 0 0 3px rgba(56, 142, 60, 0.1);
+        }
+
+        .font-headline {
+            font-family: 'Alegreya', serif;
+        }
+
+        .font-body {
+            font-family: 'PT Sans', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="font-body bg-background text-foreground">
+    <!-- Background Image -->
+    <div class="fixed inset-0 philosophy-bg"></div>
+    <div class="fixed inset-0 bg-background/50"></div>
+
+    <!-- Main Content -->
+    <div class="relative z-10 min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-md">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="font-headline text-3xl font-bold text-primary mb-2">Welcome Back</h1>
+                <p class="text-muted-foreground">Continue your wisdom journey</p>
+            </div>
+
+            <!-- Login Form -->
+            <div class="bg-[#F9F9EB]/90 backdrop-blur-sm rounded-xl p-8 shadow-xl">
+                <form id="loginForm" class="space-y-6">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-foreground mb-2">
+                            Email Address
+                        </label>
+                        <input type="email" id="email" name="email" required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg form-input focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                            placeholder="Enter your email">
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-foreground mb-2">
+                            Password
+                        </label>
+                        <input type="password" id="password" name="password" required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg form-input focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                            placeholder="Enter your password">
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center">
+                            <input type="checkbox"
+                                class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                            <span class="ml-2 text-sm text-muted-foreground">Remember me</span>
+                        </label>
+                        <a href="#" class="text-sm text-primary hover:text-primary/80 transition-colors">
+                            Forgot password?
+                        </a>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full bg-primary text-white py-3 px-4 rounded-lg font-semibold hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                        Sign In
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <div class="relative my-6">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-[#F9F9EB] text-muted-foreground">Or continue with</span>
+                    </div>
+                </div>
+
+                <!-- Social Login -->
+                <div class="space-y-3">
+                    <button
+                        class="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg text-foreground hover:bg-gray-50 transition-colors">
+                        <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24">
+                            <path fill="#4285F4"
+                                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                            <path fill="#34A853"
+                                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                            <path fill="#FBBC05"
+                                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                            <path fill="#EA4335"
+                                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                        </svg>
+                        Continue with Google
+                    </button>
+                </div>
+
+                <!-- Sign Up Link -->
+                <p class="text-center mt-6 text-sm text-muted-foreground">
+                    Don't have an account?
+                    <a href="signup.html" class="text-primary hover:text-primary/80 font-medium transition-colors">
+                        Sign up
+                    </a>
+                </p>
+            </div>
+
+            <!-- Back to Home -->
+            <div class="text-center mt-6">
+                <a href="index.html" class="text-muted-foreground hover:text-foreground transition-colors">
+                    ← Back to home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast"
+        class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50">
+        <div class="flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span id="toastMessage">Success!</span>
+        </div>
+    </div>
+
+    <script>
+        // Form handling
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Simple validation
+            if (!email || !password) {
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+
+            // Simulate login process
+            showToast('Signing in...', 'info');
+
+            // Simulate API call
+            setTimeout(() => {
+                // For demo purposes, redirect to dashboard
+                window.location.href = 'dashboard.html';
+            }, 1500);
+        });
+
+        // Toast notification system
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+
+            // Set message and type
+            toastMessage.textContent = message;
+
+            // Set colors based on type
+            toast.className = 'fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50';
+
+            switch (type) {
+                case 'success':
+                    toast.classList.add('bg-green-500', 'text-white');
+                    break;
+                case 'error':
+                    toast.classList.add('bg-red-500', 'text-white');
+                    break;
+                case 'info':
+                    toast.classList.add('bg-blue-500', 'text-white');
+                    break;
+            }
+
+            // Show toast
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
+
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+            }, 3000);
+        }
+
+        // Add form animations
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('.bg-white\\/90');
+            form.style.opacity = '0';
+            form.style.transform = 'translateY(20px)';
+
+            setTimeout(() => {
+                form.style.transition = 'all 0.6s ease-out';
+                form.style.opacity = '1';
+                form.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
+</body>
+
+</html>

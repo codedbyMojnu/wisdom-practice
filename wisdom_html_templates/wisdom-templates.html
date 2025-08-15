@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisdom Templates - Wisdom Compass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;700&family=PT+Sans:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#388E3C',
+                        secondary: '#9E9E9E',
+                        accent: '#D4AC0D',
+                        destructive: '#D32F2F',
+                        muted: '#E0E0E0',
+                        background: '#F5F5DC',
+                        foreground: '#240F0F',
+                        card: '#F5F5F0',
+                        border: '#CCCCCC'
+                    },
+                    fontFamily: {
+                        'headline': ['Alegreya', 'serif'],
+                        'body': ['PT Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 3px rgba(56, 142, 60, 0.1);
+        }
+
+        .font-headline {
+            font-family: 'Alegreya', serif;
+        }
+
+        .font-body {
+            font-family: 'PT Sans', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="font-body bg-background text-foreground">
+    <!-- Sidebar -->
+    <div id="sidebar"
+        class="fixed inset-y-0 left-0 z-50 w-64 bg-[#F9F9EB] shadow-lg sidebar-transition transform -translate-x-full lg:translate-x-0">
+        <div class="flex items-center justify-between h-16 px-6 border-b">
+            <h1 class="text-xl font-bold text-primary">Wisdom Practice</h1>
+            <button id="closeSidebar" class="lg:hidden p-2 rounded-md hover:bg-gray-100" aria-label="Close sidebar">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+        </div>
+
+        <nav class="px-4 py-6">
+            <ul class="space-y-2">
+                <li>
+                    <a href="dashboard.html"
+                        class="flex items-center px-4 py-3 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z"></path>
+                        </svg>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="profile.html"
+                        class="flex items-center px-4 py-3 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        Profile
+                    </a>
+                </li>
+                <li>
+                    <a href="wisdom-templates.html"
+                        class="flex items-center px-4 py-3 text-primary bg-primary/10 rounded-lg font-medium">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                            </path>
+                        </svg>
+                        Wisdom Templates
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t">
+            <button onclick="logout()"
+                class="w-full flex items-center px-4 py-3 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                    </path>
+                </svg>
+                Sign Out
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden"></div>
+
+    <!-- Main Content -->
+    <div class="lg:ml-64 min-h-screen bg-background/80">
+        <!-- Header -->
+        <header class="bg-[#F9F9EB] shadow-sm border-b px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <button id="openSidebar" class="lg:hidden p-2 rounded-md hover:bg-gray-100 mr-4"
+                        aria-label="Open sidebar">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <h1 class="text-2xl font-bold text-foreground">Wisdom Templates</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 rounded-full hover:bg-gray-100" aria-label="Notifications">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                    </button>
+                    <div
+                        class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-semibold">
+                        U
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="p-4 md:p-6 lg:p-8">
+            <div class="bg-[#F9F9EB] rounded-lg border shadow-sm">
+                <div class="p-6">
+                    <div class="mb-6">
+                        <h2 class="font-headline text-xl font-semibold mb-2">Global Wisdom Library</h2>
+                        <p class="text-sm text-muted-foreground">
+                            Explore these foundational wisdom entries that are available to all users.
+                        </p>
+                    </div>
+
+                    <!-- Search and Filter Bar -->
+                    <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                        <div class="flex-1">
+                            <div class="relative">
+                                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                                <input type="text" id="searchInput" placeholder="Search wisdom entries..."
+                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg search-input focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <select id="categoryFilter"
+                                class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                                <option value="">All Categories</option>
+                                <option value="Stoicism">Stoicism</option>
+                                <option value="Zen Buddhism">Zen Buddhism</option>
+                                <option value="Japanese Aesthetics">Japanese Aesthetics</option>
+                            </select>
+                            <button onclick="resetFilters()"
+                                class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Wisdom Entries Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b">
+                                    <th class="text-left py-3 px-4 font-medium text-foreground w-[200px]">Title</th>
+                                    <th class="text-left py-3 px-4 font-medium text-foreground">Description</th>
+                                    <th class="text-left py-3 px-4 font-medium text-foreground w-[150px]">Category</th>
+                                    <th class="text-left py-3 px-4 font-medium text-foreground w-[100px]">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="wisdomTableBody">
+                                <!-- Wisdom entries will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="flex items-center justify-between mt-6">
+                        <div class="text-sm text-muted-foreground">
+                            Showing <span id="showingStart">1</span> to <span id="showingEnd">6</span> of <span
+                                id="totalEntries">6</span> entries
+                        </div>
+                        <div class="flex gap-2">
+                            <button id="prevPage" onclick="previousPage()"
+                                class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                Previous
+                            </button>
+                            <button id="nextPage" onclick="nextPage()"
+                                class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Wisdom Detail Modal -->
+    <div id="wisdomDetailModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-[#F9F9EB] rounded-lg max-w-2xl w-full p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 id="modalTitle" class="text-xl font-semibold"></h3>
+                    <button onclick="closeWisdomModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-foreground mb-2">Description</label>
+                        <p id="modalDescription" class="text-muted-foreground"></p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-foreground mb-2">Category</label>
+                        <span id="modalCategory"
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"></span>
+                    </div>
+                    <div class="flex gap-3 pt-4">
+                        <button onclick="addToPractice()"
+                            class="flex-1 bg-primary text-white py-2 px-4 rounded-md hover:bg-primary/90 transition-colors">
+                            Add to Practice
+                        </button>
+                        <button onclick="closeWisdomModal()"
+                            class="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast"
+        class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50">
+        <div class="flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span id="toastMessage">Success!</span>
+        </div>
+    </div>
+
+    <script>
+        // Global wisdom entries data
+        const globalWisdomEntries = [
+            {
+                id: 'gw-1',
+                title: 'Memento Mori',
+                description: 'Remember you will die. Use this to create priority and meaning.',
+                category: 'Stoicism',
+            },
+            {
+                id: 'gw-2',
+                title: 'Amor Fati',
+                description: 'Love your fate. Accept and embrace everything that has happened.',
+                category: 'Stoicism',
+            },
+            {
+                id: 'gw-3',
+                title: 'The Obstacle Is The Way',
+                description: 'Frame obstacles as opportunities for growth and learning.',
+                category: 'Stoicism',
+            },
+            {
+                id: 'gw-4',
+                title: 'Ego is the Enemy',
+                description: 'Practice humility and confidence over ego and arrogance.',
+                category: 'Stoicism',
+            },
+            {
+                id: 'gw-5',
+                title: 'Beginner\'s Mind (Shoshin)',
+                description: 'Approach situations with an attitude of openness, eagerness, and a lack of preconceptions.',
+                category: 'Zen Buddhism',
+            },
+            {
+                id: 'gw-6',
+                title: 'Wabi-Sabi',
+                description: 'Find beauty in imperfection and impermanence.',
+                category: 'Japanese Aesthetics',
+            },
+        ];
+
+        let filteredEntries = [...globalWisdomEntries];
+        let currentPage = 1;
+        const entriesPerPage = 5;
+
+        // Sidebar functionality
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        // Search and filter functionality
+        function filterEntries() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+
+            filteredEntries = globalWisdomEntries.filter(entry => {
+                const matchesSearch = entry.title.toLowerCase().includes(searchTerm) ||
+                    entry.description.toLowerCase().includes(searchTerm);
+                const matchesCategory = !categoryFilter || entry.category === categoryFilter;
+
+                return matchesSearch && matchesCategory;
+            });
+
+            currentPage = 1;
+            renderTable();
+            updatePagination();
+        }
+
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = '';
+            filteredEntries = [...globalWisdomEntries];
+            currentPage = 1;
+            renderTable();
+            updatePagination();
+        }
+
+        // Render wisdom table
+        function renderTable() {
+            const tableBody = document.getElementById('wisdomTableBody');
+            const startIndex = (currentPage - 1) * entriesPerPage;
+            const endIndex = startIndex + entriesPerPage;
+            const pageEntries = filteredEntries.slice(startIndex, endIndex);
+
+            tableBody.innerHTML = pageEntries.map(entry => `
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="py-3 px-4 font-medium">${entry.title}</td>
+                    <td class="py-3 px-4 text-muted-foreground">${entry.description}</td>
+                    <td class="py-3 px-4">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            ${entry.category}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4">
+                        <button onclick="viewWisdom('${entry.id}')" class="text-primary hover:text-primary/80 text-sm mr-3">View</button>
+                        <button onclick="addToPractice('${entry.id}')" class="text-green-600 hover:text-green-700 text-sm">Practice</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Update pagination
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredEntries.length / entriesPerPage);
+            const showingStart = (currentPage - 1) * entriesPerPage + 1;
+            const showingEnd = Math.min(currentPage * entriesPerPage, filteredEntries.length);
+
+            document.getElementById('showingStart').textContent = showingStart;
+            document.getElementById('showingEnd').textContent = showingEnd;
+            document.getElementById('totalEntries').textContent = filteredEntries.length;
+
+            document.getElementById('prevPage').disabled = currentPage === 1;
+            document.getElementById('nextPage').disabled = currentPage === totalPages;
+        }
+
+        // Pagination functions
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+                updatePagination();
+            }
+        }
+
+        function nextPage() {
+            const totalPages = Math.ceil(filteredEntries.length / entriesPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+                updatePagination();
+            }
+        }
+
+        // View wisdom details
+        function viewWisdom(id) {
+            const wisdom = globalWisdomEntries.find(w => w.id === id);
+            if (wisdom) {
+                document.getElementById('modalTitle').textContent = wisdom.title;
+                document.getElementById('modalDescription').textContent = wisdom.description;
+                document.getElementById('modalCategory').textContent = wisdom.category;
+                document.getElementById('wisdomDetailModal').classList.remove('hidden');
+            }
+        }
+
+        // Close wisdom modal
+        function closeWisdomModal() {
+            document.getElementById('wisdomDetailModal').classList.add('hidden');
+        }
+
+        // Add to practice
+        function addToPractice(id) {
+            const wisdom = globalWisdomEntries.find(w => w.id === id);
+            if (wisdom) {
+                showToast(`"${wisdom.title}" added to your practice list!`, 'success');
+                closeWisdomModal();
+            }
+        }
+
+        // Toast notification system
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+
+            toastMessage.textContent = message;
+
+            toast.className = 'fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50';
+
+            switch (type) {
+                case 'success':
+                    toast.classList.add('bg-green-500', 'text-white');
+                    break;
+                case 'error':
+                    toast.classList.add('bg-red-500', 'text-white');
+                    break;
+                case 'info':
+                    toast.classList.add('bg-blue-500', 'text-white');
+                    break;
+            }
+
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
+
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+            }, 3000);
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to sign out?')) {
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Event listeners
+        document.getElementById('openSidebar').addEventListener('click', toggleSidebar);
+        document.getElementById('closeSidebar').addEventListener('click', toggleSidebar);
+        document.getElementById('sidebarOverlay').addEventListener('click', toggleSidebar);
+
+        document.getElementById('searchInput').addEventListener('input', filterEntries);
+        document.getElementById('categoryFilter').addEventListener('change', filterEntries);
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function () {
+            renderTable();
+            updatePagination();
+        });
+    </script>
+</body>
+
+</html>

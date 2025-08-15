@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Wisdom Compass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;700&family=PT+Sans:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#388E3C',
+                        secondary: '#9E9E9E',
+                        accent: '#D4AC0D',
+                        destructive: '#D32F2F',
+                        muted: '#E0E0E0',
+                        background: '#F5F5DC',
+                        foreground: '#240F0F',
+                        card: '#F5F5F0',
+                        border: '#CCCCCC'
+                    },
+                    fontFamily: {
+                        'headline': ['Alegreya', 'serif'],
+                        'body': ['PT Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+
+        .font-headline {
+            font-family: 'Alegreya', serif;
+        }
+
+        .font-body {
+            font-family: 'PT Sans', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="font-body bg-background text-foreground">
+    <!-- Sidebar -->
+    <div id="sidebar"
+        class="fixed inset-y-0 left-0 z-50 w-64 bg-[#F9F9EB] shadow-lg sidebar-transition transform -translate-x-full lg:translate-x-0">
+        <div class="flex items-center justify-between h-16 px-6 border-b">
+            <h1 class="text-xl font-bold text-primary">Wisdom Practice</h1>
+            <button id="closeSidebar" class="lg:hidden p-2 rounded-md hover:bg-gray-100" aria-label="Close sidebar">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+        </div>
+
+        <nav class="px-4 py-6">
+            <ul class="space-y-2">
+                <li>
+                    <a href="dashboard.html"
+                        class="flex items-center px-4 py-3 text-primary bg-primary/10 rounded-lg font-medium">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z"></path>
+                        </svg>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="profile.html"
+                        class="flex items-center px-4 py-3 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        Profile
+                    </a>
+                </li>
+                <li>
+                    <a href="wisdom-templates.html"
+                        class="flex items-center px-4 py-3 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                            </path>
+                        </svg>
+                        Wisdom Templates
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t">
+            <button onclick="logout()"
+                class="w-full flex items-center px-4 py-3 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                    </path>
+                </svg>
+                Sign Out
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden"></div>
+
+    <!-- Main Content -->
+    <div class="lg:ml-64 min-h-screen bg-background/80">
+        <!-- Header -->
+        <header class="bg-[#F9F9EB] shadow-sm border-b px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <button id="openSidebar" class="lg:hidden p-2 rounded-md hover:bg-gray-100 mr-4"
+                        aria-label="Open sidebar">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <h1 class="text-2xl font-bold text-foreground">Dashboard</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 rounded-full hover:bg-gray-100" aria-label="Notifications">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                    </button>
+                    <div
+                        class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-semibold">
+                        U
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Content -->
+        <main class="p-4 md:p-6 lg:p-8">
+            <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+                <!-- Danger Zone Alert -->
+                <div class="lg:col-span-3">
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <div class="flex items-start">
+                            <svg class="w-5 h-5 text-red-400 mt-0.5 mr-3" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z">
+                                </path>
+                            </svg>
+                            <div>
+                                <h3 class="text-sm font-medium text-red-800">Practice Reminder</h3>
+                                <p class="text-sm text-red-700 mt-1">You haven't logged any wisdom practice in the last
+                                    3 days. Consistency is key to growth.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Welcome Card -->
+                <div class="lg:col-span-3">
+                    <div class="border-2 border-primary/50 bg-primary/5 rounded-lg p-6">
+                        <h2 class="font-headline text-3xl font-bold text-primary mb-2">Welcome Back</h2>
+                        <p class="text-base text-muted-foreground">
+                            Your journey of a thousand miles begins with a single step. What will you practice today?
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Wisdom Chart -->
+                <div class="lg:col-span-2">
+                    <div class="bg-[#F9F9EB] rounded-lg border shadow-sm">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h3 class="font-headline text-lg font-semibold">Wisdom Progress</h3>
+                                    <p class="text-sm text-muted-foreground">Your applied and missed wisdom entries over
+                                        time.</p>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <select id="chartFilter"
+                                        class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                                        <option value="yearly">Yearly</option>
+                                        <option value="monthly">Monthly</option>
+                                    </select>
+                                    <select id="yearSelect"
+                                        class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                                        <option value="2024">2024</option>
+                                        <option value="2023">2023</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="wisdomChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily Logger and AI Suggestions -->
+                <div class="flex flex-col gap-6">
+                    <!-- Daily Logger -->
+                    <div class="bg-[#F9F9EB] rounded-lg border shadow-sm">
+                        <div class="p-6">
+                            <h3 class="font-headline text-lg font-semibold mb-2">Daily Wisdom Log</h3>
+                            <p class="text-sm text-muted-foreground mb-4">What wisdom did you practice today?</p>
+
+                            <form id="dailyLoggerForm" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-foreground mb-2">Select Wisdom</label>
+                                    <div class="flex gap-2">
+                                        <select id="wisdomSelect"
+                                            class="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                                            <option value="">Choose a wisdom to log...</option>
+                                            <option value="gw-1">Memento Mori</option>
+                                            <option value="gw-2">Amor Fati</option>
+                                            <option value="gw-3">The Obstacle Is The Way</option>
+                                            <option value="gw-4">Ego is the Enemy</option>
+                                            <option value="gw-5">Beginner's Mind (Shoshin)</option>
+                                            <option value="gw-6">Wabi-Sabi</option>
+                                        </select>
+                                        <button type="button" onclick="openCustomWisdomModal()"
+                                            class="px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="flex gap-4">
+                                    <button type="button" onclick="logWisdom('applied')"
+                                        class="flex-1 bg-primary text-white py-2 px-4 rounded-md hover:bg-primary/90 transition-colors flex items-center justify-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        Applied
+                                    </button>
+                                    <button type="button" onclick="logWisdom('missed')"
+                                        class="flex-1 bg-destructive text-white py-2 px-4 rounded-md hover:bg-destructive/90 transition-colors flex items-center justify-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                        Missed
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- AI Suggestions -->
+                    <div class="bg-[#F9F9EB] rounded-lg border shadow-sm">
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 mb-2">
+                                <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
+                                    </path>
+                                </svg>
+                                <h3 class="text-lg font-semibold">AI-Powered Suggestions</h3>
+                            </div>
+                            <p class="text-sm text-muted-foreground mb-4">Discover new wisdom based on your recent logs.
+                            </p>
+
+                            <div id="aiSuggestions" class="min-h-[120px]">
+                                <div class="text-center text-muted-foreground pt-4">Click the button to get new
+                                    suggestions.</div>
+                            </div>
+
+                            <button onclick="getAISuggestions()" id="aiSuggestionsBtn"
+                                class="w-full bg-accent text-accent-foreground py-2 px-4 rounded-md hover:bg-accent/90 transition-colors flex items-center justify-center mt-4">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
+                                    </path>
+                                </svg>
+                                Get New Suggestions
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category Breakdown and Lifetime Stats -->
+                <div class="lg:col-span-3 grid md:grid-cols-2 gap-6">
+                    <!-- Category Breakdown Chart -->
+                    <div class="bg-[#F9F9EB] rounded-lg border shadow-sm">
+                        <div class="p-6">
+                            <h3 class="text-lg font-semibold mb-2">Category Breakdown</h3>
+                            <p class="text-sm text-muted-foreground mb-4">Your wisdom practice by category.</p>
+                            <div class="chart-container">
+                                <canvas id="categoryChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lifetime Stats Chart -->
+                    <div class="bg-[#F9F9EB] rounded-lg border shadow-sm">
+                        <div class="p-6">
+                            <h3 class="text-lg font-semibold mb-2">Lifetime Stats</h3>
+                            <p class="text-sm text-muted-foreground mb-4">Your overall wisdom journey.</p>
+                            <div class="chart-container">
+                                <canvas id="lifetimeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Custom Wisdom Modal -->
+
+    </div>
+
+
+    <!-- Toast Notification -->
+    <div id="toast"
+        class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50">
+        <div class="flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span id="toastMessage">Success!</span>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for charts
+        const wisdomData = {
+            applied: [12, 19, 15, 25, 22, 30, 28, 35, 32, 40, 38, 45],
+            missed: [5, 8, 6, 10, 7, 12, 9, 15, 11, 18, 14, 20]
+        };
+
+        const categoryData = {
+            labels: ['Stoicism', 'Zen Buddhism', 'Japanese Aesthetics', 'Personal'],
+            data: [45, 25, 20, 10]
+        };
+
+        const lifetimeData = {
+            labels: ['Applied', 'Missed', 'Total Entries', 'Streak'],
+            data: [320, 89, 409, 15]
+        };
+
+        // Initialize charts
+        function initializeCharts() {
+            // Wisdom Progress Chart
+            const wisdomCtx = document.getElementById('wisdomChart').getContext('2d');
+            new Chart(wisdomCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [
+                        {
+                            label: 'Applied',
+                            data: wisdomData.applied,
+                            backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Missed',
+                            data: wisdomData.missed,
+                            backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                            borderColor: 'rgba(239, 68, 68, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 5
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+
+            // Category Breakdown Chart
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: categoryData.labels,
+                    datasets: [{
+                        data: categoryData.data,
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(100, 116, 139, 0.8)',
+                            'rgba(34, 197, 94, 0.8)'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Lifetime Stats Chart
+            const lifetimeCtx = document.getElementById('lifetimeChart').getContext('2d');
+            new Chart(lifetimeCtx, {
+                type: 'bar',
+                data: {
+                    labels: lifetimeData.labels,
+                    datasets: [{
+                        label: 'Count',
+                        data: lifetimeData.data,
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.8)',
+                            'rgba(239, 68, 68, 0.8)',
+                            'rgba(100, 116, 139, 0.8)',
+                            'rgba(245, 158, 11, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(100, 116, 139, 1)',
+                            'rgba(245, 158, 11, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // Sidebar functionality
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        // Custom wisdom modal
+        function openCustomWisdomModal() {
+            document.getElementById('customWisdomModal').classList.remove('hidden');
+        }
+
+        function closeCustomWisdomModal() {
+            document.getElementById('customWisdomModal').classList.add('hidden');
+            document.getElementById('customWisdomForm').reset();
+        }
+
+        // Wisdom logging
+        function logWisdom(status) {
+            const wisdomId = document.getElementById('wisdomSelect').value;
+            if (!wisdomId) {
+                showToast('Please select a wisdom entry first', 'error');
+                return;
+            }
+
+            const wisdom = document.getElementById('wisdomSelect').options[document.getElementById('wisdomSelect').selectedIndex].text;
+            showToast(`Wisdom logged: ${status === 'applied' ? 'Applied' : 'Missed'} - "${wisdom}"`, 'success');
+
+            // Reset form
+            document.getElementById('wisdomSelect').value = '';
+
+            // Update danger zone alert
+            document.querySelector('.bg-red-50').classList.add('hidden');
+        }
+
+        // AI Suggestions
+        function getAISuggestions() {
+            const btn = document.getElementById('aiSuggestionsBtn');
+            const suggestionsDiv = document.getElementById('aiSuggestions');
+
+            // Show loading state
+            btn.innerHTML = '<svg class="w-4 h-4 mr-2 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Getting suggestions...';
+            btn.disabled = true;
+
+            // Simulate AI processing
+            setTimeout(() => {
+                const suggestions = [
+                    "Practice 'Beginner's Mind' when approaching new challenges",
+                    "Consider 'Amor Fati' for accepting current circumstances",
+                    "Apply 'The Obstacle Is The Way' to your current obstacles"
+                ];
+
+                suggestionsDiv.innerHTML = suggestions.map(suggestion =>
+                    `<div class="flex items-start gap-2 mb-2">
+                        <svg class="w-4 h-4 mt-1 text-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        <span class="text-sm">${suggestion}</span>
+                    </div>`
+                ).join('');
+
+                btn.innerHTML = '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>Get New Suggestions';
+                btn.disabled = false;
+
+                showToast('AI suggestions ready!', 'success');
+            }, 2000);
+        }
+
+        // Custom wisdom form
+        document.getElementById('customWisdomForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const title = document.getElementById('customTitle').value;
+            const description = document.getElementById('customDescription').value;
+            const category = document.getElementById('customCategory').value;
+
+            // Add to wisdom select
+            const select = document.getElementById('wisdomSelect');
+            const option = document.createElement('option');
+            option.value = `custom-${Date.now()}`;
+            option.text = title;
+            select.appendChild(option);
+
+            showToast(`"${title}" has been added to your custom entries`, 'success');
+            closeCustomWisdomModal();
+        });
+
+        // Toast notification system
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+
+            toastMessage.textContent = message;
+
+            toast.className = 'fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50';
+
+            switch (type) {
+                case 'success':
+                    toast.classList.add('bg-green-500', 'text-white');
+                    break;
+                case 'error':
+                    toast.classList.add('bg-red-500', 'text-white');
+                    break;
+                case 'info':
+                    toast.classList.add('bg-blue-500', 'text-white');
+                    break;
+            }
+
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
+
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+            }, 3000);
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to sign out?')) {
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Event listeners
+        document.getElementById('openSidebar').addEventListener('click', toggleSidebar);
+        document.getElementById('closeSidebar').addEventListener('click', toggleSidebar);
+        document.getElementById('sidebarOverlay').addEventListener('click', toggleSidebar);
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            initializeCharts();
+        });
+    </script>
+</body>
+
+</html>
