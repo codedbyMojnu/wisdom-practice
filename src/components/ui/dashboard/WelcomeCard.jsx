@@ -39,7 +39,7 @@ export default function WelcomeCard() {
 
         {/* Progress */}
         <p className="text-lg text-gray-700 mb-1">
-          আজকের দায়িত্ব পূরণ করেছেন{" "}
+          আজকের দায়িত্ব পালন করেছেন{" "}
           <span className="font-semibold text-green-700">
             {todayWisdomAppliedPercentage}%
           </span>

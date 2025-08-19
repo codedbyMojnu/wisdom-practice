@@ -1,0 +1,63 @@
+{
+  "uid": "96bBcPZ62SXYz6HZJo4OcgYd2UQ2",
+  "dailyBasisWisdomLogs": {
+    "2025-08-18": {
+      "wisdoms": [
+        {
+          "wisdomName": "রোগ হলে ভালো ডাক্তার দেখানো ও ওষুধ খাওয়া ",
+          "applied": true,
+          "category": "Health & Wellness Wisdom",
+          "id": "e98ea618-892a-43f6-85c6-630230b35c0c"
+        },
+        {
+          "id": "cb553407-1274-4557-9906-0022ba834b86",
+          "wisdomName": "আজকের দিনের প্লান এপ্লাই করা হয়েছে",
+          "category": "Practical Wisdom",
+          "applied": false
+        },
+        {
+          "id": "d98622e4-0cb8-4e85-ab1c-b63dfde4dd06",
+          "category": "Practical Wisdom",
+          "applied": false,
+          "wisdomName": "প্রতিদিন ভোর ৫ টায় উঠা, এবং ৫.৩০ এর মধ্যে দিনের প্লান রেডি করা"
+        },
+        {
+          "category": "Practical Wisdom",
+          "wisdomName": "আজকের দিনের প্লান এপ্লাই করা হয়েছে",
+          "id": "cb553407-1274-4557-9906-0022ba834b86",
+          "applied": true
+        }
+      ],
+      "id": "5e157722-7d71-41d3-84c3-b4872daa72b5"
+    },
+    "2025-08-19": {
+      "wisdoms": [
+        {
+          "applied": false,
+          "id": "d98622e4-0cb8-4e85-ab1c-b63dfde4dd06",
+          "wisdomName": "সত্য কথা বলা ও সত্যের পথে চলা",
+          "category": "Practical Wisdom"
+        },
+        {
+          "applied": true,
+          "wisdomName": "আজকের দিনের প্লান এপ্লাই করা হয়েছে",
+          "category": "Practical Wisdom",
+          "id": "cb553407-1274-4557-9906-0022ba834b86"
+        },
+        {
+          "id": "e98ea618-892a-43f6-85c6-630230b35c0c",
+          "applied": true,
+          "wisdomName": "রোগ হলে ভালো ডাক্তার দেখানো ও ওষুধ খাওয়া ",
+          "category": "Health & Wellness Wisdom"
+        },
+        {
+          "applied": true,
+          "id": "d98622e4-0cb8-4e85-ab1c-b63dfde4dd06",
+          "wisdomName": "সবাইকে ভালোবাসা ও সম্মান করা",
+          "category": "Practical Wisdom"
+        }
+      ],
+      "id": "889d5c27-0a02-447c-9f79-d4dec09883d9"
+    }
+  }
+}

@@ -86,10 +86,10 @@ export default function CategoryPercentageChart() {
         {/* Danger List */}
         {dangerCategories.length > 0 && (
           <div className="mt-4">
-            <h4 className="text-md font-semibold text-red-600 mb-2">
+            <h4 className="text-md font-semibold text-black mb-2">
               ⚠ Danger Categories (less than 80%)
             </h4>
-            <ul className="list-disc list-inside text-red-500">
+            <ul className="list-disc list-inside text-gray-500">
               {dangerCategories.map((cat) => (
                 <li key={cat}>{cat}</li>
               ))}
