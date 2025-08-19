@@ -1,10 +1,15 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useAuthData } from "../../../contexts/AuthContext";
+import { useWisdomsData } from "../../../contexts/WisdomsContext";
 import { saveWisdomDataToFireStore } from "../../../utils/fireStoreDB";
+import { wisdomCategories } from "../../../utils/wisdomCategory";
 
 export default function AddWisdomModal({ onClose }) {
+  const [loading, setLoading] = useState(false);
   const { authData } = useAuthData();
+  const { wisdomsData, setWisdomsData } = useWisdomsData();
   const {
     register,
     handleSubmit,
@@ -12,9 +17,10 @@ export default function AddWisdomModal({ onClose }) {
   } = useForm();
 
   async function handleWisdomSubmit(data) {
+    setLoading(true);
     const wisdomData = {
-      uid: authData?.user?.uid,
-      wisdomTitle: data.wisdomTitle,
+      id: crypto.randomUUID(),
+      wisdomName: data.wisdomName,
       description: data.description,
       category: data.category,
       createdAt: new Date(),
@@ -25,15 +31,20 @@ export default function AddWisdomModal({ onClose }) {
       wisdomData
     );
     if (isSaved) {
-      toast.success("Wisdom added successfully");
+      setWisdomsData({
+        ...wisdomsData,
+        wisdoms: [...(wisdomsData?.wisdoms || []), wisdomData],
+      });
+      setLoading(false);
       onClose();
+      toast.success("Wisdom added successfully");
     } else {
       toast.error("Failed to add wisdom");
+      setLoading(false);
     }
   }
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-      <ToastContainer />
       <div
         className="bg-[#F9F9EB] rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto transform transition-all duration-200 ease-out opacity-100 scale-100 translate-y-0"
         style={{
@@ -45,7 +56,7 @@ export default function AddWisdomModal({ onClose }) {
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-[#240F0F]">
-              Add New Wisdom To Practice
+              Add New Wisdom Name To Practice
             </h2>
             <button
               className="text-gray-500 hover:text-gray-700 transition-colors p-1 rounded-full hover:bg-gray-100"
@@ -75,17 +86,17 @@ export default function AddWisdomModal({ onClose }) {
             {/* Wisdom Title */}
             <div>
               <label className="block text-sm font-medium text-[#240F0F] mb-2">
-                Wisdom Title
+                Wisdom Name
               </label>
               <input
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#388E3C] focus:border-transparent transition-all"
-                placeholder="Enter wisdom title"
-                {...register("wisdomTitle", {
-                  required: "Wisdom title is required",
+                placeholder="Enter wisdom name"
+                {...register("wisdomName", {
+                  required: "Wisdom name is required",
                   minLength: {
                     value: 4,
-                    message: "Wisdom title must be at least 4 characters long",
+                    message: "Wisdom name must be at least 4 characters long",
                   },
                 })}
               />
@@ -131,13 +142,9 @@ export default function AddWisdomModal({ onClose }) {
                   required: "Category is required",
                 })}
               >
-                <option value="">Select a category</option>
-                <option value="stoicism">Stoicism</option>
-                <option value="buddhism">Buddhism</option>
-                <option value="zen">Zen</option>
-                <option value="philosophy">General Philosophy</option>
-                <option value="mindfulness">Mindfulness</option>
-                <option value="personal">Personal Wisdom</option>
+                {wisdomCategories?.map((category) => (
+                  <option key={category}>{category}</option>
+                ))}
               </select>
               {errors.category && (
                 <p className="text-red-500 text-sm mt-1">
@@ -172,7 +179,7 @@ export default function AddWisdomModal({ onClose }) {
                     d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                   ></path>
                 </svg>
-                Add Wisdom
+                {loading ? "Adding Wisdom..." : "Add Wisdom"}
               </button>
             </div>
           </form>

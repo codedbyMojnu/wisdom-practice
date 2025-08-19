@@ -1,12 +1,30 @@
+import { useEffect } from "react";
 import AiSuggestions from "../components/ui/dashboard/AiSuggestions";
 import CategoryPercentageChart from "../components/ui/dashboard/CategoryPercentangeChart";
 import LifetimeStatsChart from "../components/ui/dashboard/LifetimeStatsChart";
 import WelcomeCard from "../components/ui/dashboard/WelcomeCard";
-import WisdomCountChart from "../components/ui/dashboard/WisdomCountChart";
 import WisdomLogger from "../components/ui/dashboard/WisdomLogger";
+import WisdomProgressChart from "../components/ui/dashboard/WisdomProgressChart";
 import DashboardHeader from "../components/ui/DashboardHeader";
+import { useAuthData } from "../contexts/AuthContext";
+import { useWisdomsData } from "../contexts/WisdomsContext";
+import { getWisdomData } from "../utils/fireStoreDB";
 
 export default function DashboardPage() {
+  const { authData, setAuthData } = useAuthData();
+  const { wisdomsData, setWisdomsData } = useWisdomsData();
+
+  useEffect(() => {
+    async function getWisdomDataFromfirStore(uid) {
+      const data = await getWisdomData(uid);
+      if (data?.wisdoms?.length > 0) {
+        setWisdomsData(data);
+      }
+    }
+    getWisdomDataFromfirStore(authData?.user?.uid);
+  }, []);
+
+  console.log(wisdomsData?.wisdoms);
   return (
     <>
       {/* --- Main Content --- */}
@@ -18,7 +36,7 @@ export default function DashboardPage() {
             <WelcomeCard />
 
             {/* Wisdom Chart */}
-            <WisdomCountChart />
+            <WisdomProgressChart />
 
             <div className="flex flex-col gap-6">
               {/* Daily Logger and AI Suggestions */}

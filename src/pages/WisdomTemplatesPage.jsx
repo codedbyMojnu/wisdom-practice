@@ -1,45 +1,9 @@
 import DashboardHeader from "../components/ui/DashboardHeader";
+import { useWisdomsData } from "../contexts/WisdomsContext";
 
 export default function WisdomTemplatesPage() {
   // Hardcoded wisdom entries for the table
-  const wisdomEntries = [
-    {
-      id: 1,
-      title: "The Power of Now",
-      description: "Living fully in the present moment improves mindfulness.",
-      category: "Stoicism",
-    },
-    {
-      id: 2,
-      title: "Zen Simplicity",
-      description: "Simplicity brings peace and clarity.",
-      category: "Zen Buddhism",
-    },
-    {
-      id: 3,
-      title: "Wabi-Sabi",
-      description: "Embrace imperfection and impermanence.",
-      category: "Japanese Aesthetics",
-    },
-    {
-      id: 4,
-      title: "Control What You Can",
-      description: "Focus on things within your control to find tranquility.",
-      category: "Stoicism",
-    },
-    {
-      id: 5,
-      title: "Meditation Practice",
-      description: "Regular meditation calms the mind and body.",
-      category: "Zen Buddhism",
-    },
-    {
-      id: 6,
-      title: "Mono no aware",
-      description: "Appreciation of the transient beauty of things.",
-      category: "Japanese Aesthetics",
-    },
-  ];
+  const { wisdomsData, setWisdomsData } = useWisdomsData();
 
   return (
     <>
@@ -52,7 +16,7 @@ export default function WisdomTemplatesPage() {
       {/* Main Content */}
       <div className="lg:ml-64 min-h-screen bg-background/80">
         {/* Header */}
-        <DashboardHeader headerName="Wisdom Templates" />
+        <DashboardHeader headerName="Your Wisdoms" />
 
         {/* Content */}
         <main className="p-6">
@@ -64,7 +28,7 @@ export default function WisdomTemplatesPage() {
                     #
                   </th>
                   <th className="border border-primary/40 p-3 text-left text-sm font-semibold text-primary">
-                    Title
+                    Wisdom Name
                   </th>
                   <th className="border border-primary/40 p-3 text-left text-sm font-semibold text-primary">
                     Description
@@ -72,28 +36,36 @@ export default function WisdomTemplatesPage() {
                   <th className="border border-primary/40 p-3 text-left text-sm font-semibold text-primary">
                     Category
                   </th>
+                  <th className="border border-primary/40 p-3 text-left text-sm font-semibold text-primary">
+                    Applied Percentage
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {wisdomEntries.map(({ id, title, description, category }) => (
-                  <tr
-                    key={id}
-                    className="even:bg-white odd:bg-primary/5 hover:bg-primary/20 transition-colors"
-                  >
-                    <td className="border border-primary/40 p-3 text-sm text-gray-700">
-                      {id}
-                    </td>
-                    <td className="border border-primary/40 p-3 text-sm text-gray-800 font-medium">
-                      {title}
-                    </td>
-                    <td className="border border-primary/40 p-3 text-sm text-gray-700">
-                      {description}
-                    </td>
-                    <td className="border border-primary/40 p-3 text-sm text-gray-700">
-                      {category}
-                    </td>
-                  </tr>
-                ))}
+                {wisdomsData?.wisdoms?.map(
+                  ({ id, wisdomName, description, category }, index) => (
+                    <tr
+                      key={id}
+                      className="even:bg-white odd:bg-primary/5 hover:bg-primary/20 transition-colors"
+                    >
+                      <td className="border border-primary/40 p-3 text-sm text-gray-700">
+                        {index + 1}
+                      </td>
+                      <td className="border border-primary/40 p-3 text-sm text-gray-800 font-medium">
+                        {wisdomName}
+                      </td>
+                      <td className="border border-primary/40 p-3 text-sm text-gray-700">
+                        {description}
+                      </td>
+                      <td className="border border-primary/40 p-3 text-sm text-gray-700">
+                        {category}
+                      </td>
+                      <td className="border border-primary/40 p-3 text-sm text-gray-700">
+                        0
+                      </td>
+                    </tr>
+                  )
+                )}
               </tbody>
             </table>
           </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useAuthData } from "../contexts/AuthContext";
 import { getUserInfo, updateUserInfo } from "../utils/fireStoreDB";
 
@@ -42,7 +42,6 @@ export default function ProfileData() {
 
   return (
     <section className="bg-[#F9F9EB] rounded-lg border shadow-sm">
-      <ToastContainer position="top-right" />
       {error && <p className="text-red-400 text-center">{error}</p>}
       {loading ? (
         <p className="text-blue-500 text-center mt-6">Loading...</p>
