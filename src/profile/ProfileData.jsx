@@ -1,43 +1,22 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { useAuthData } from "../contexts/AuthContext";
-import { getUserInfo, updateUserInfo } from "../utils/fireStoreDB";
+import { useProfile } from "../contexts/ProfileContext";
 
 export default function ProfileData() {
-  const [userInfo, setUserInfo] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [editMode, setEditMode] = useState(false);
 
-  const { authData } = useAuthData();
+  const { userInfo, loading, error, updateUserProfile } = useProfile();
   const { register, handleSubmit } = useForm();
-
-  useEffect(() => {
-    async function getUserInfoFromDB() {
-      try {
-        const response = await getUserInfo(authData?.user?.uid);
-        if (response) {
-          setUserInfo(response);
-        }
-      } catch (error) {
-        setError("Error happened when profile data loaded");
-      } finally {
-        setLoading(false); // ✅ runs after fetch finishes
-      }
-    }
-
-    if (authData?.user?.uid) {
-      getUserInfoFromDB();
-    }
-  }, [authData?.user?.uid]);
 
   async function handleUserDataUpdate(data) {
     const updatedData = { ...userInfo, ...data };
-    await updateUserInfo(userInfo?.uid, updatedData);
-    setUserInfo(updatedData);
-    toast("Profile Data Updated Successfully");
-    setEditMode(false);
+    const success = await updateUserProfile(userInfo?.uid, updatedData);
+
+    if (success) {
+      toast("Profile Data Updated Successfully");
+      setEditMode(false);
+    }
   }
 
   return (

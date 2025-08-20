@@ -4,17 +4,20 @@ import HorizontalLine from "../../assets/icons/horizontalLine";
 import ProfileIcon from "../../assets/icons/profileIcon";
 import SignoutIcon from "../../assets/icons/signOut";
 import Templatesicon from "../../assets/icons/templatesIcon";
+import { useProfile } from "../../contexts/ProfileContext";
 import { useWisdomsData } from "../../contexts/WisdomsContext";
 import { handleFirebaseSignout } from "../../utils/firebaseAuth";
 
 export default function DashboardLayout() {
   const navigate = useNavigate();
   const { setWisdomsData } = useWisdomsData();
+  const { clearProfileData } = useProfile();
 
   async function handleSignOut() {
     const response = await handleFirebaseSignout();
     if (response) {
       setWisdomsData(null);
+      clearProfileData();
       navigate("/login");
     }
   }
