@@ -3,7 +3,6 @@ import AiSuggestions from "../components/ui/dashboard/AiSuggestions";
 import CategoryPercentageChart from "../components/ui/dashboard/CategoryPercentangeChart";
 import LifetimeStatsChart from "../components/ui/dashboard/LifetimeStatsChart";
 import WelcomeCard from "../components/ui/dashboard/WelcomeCard";
-import WisdomLogger from "../components/ui/dashboard/WisdomLogger";
 import WisdomProgressChart from "../components/ui/dashboard/WisdomProgressChart";
 import DashboardHeader from "../components/ui/DashboardHeader";
 import { useAuthData } from "../contexts/AuthContext";
@@ -40,7 +39,7 @@ export default function DashboardPage() {
 
             <div className="flex flex-col gap-6">
               {/* Daily Logger and AI Suggestions */}
-              <WisdomLogger />
+
               <AiSuggestions />
             </div>
 

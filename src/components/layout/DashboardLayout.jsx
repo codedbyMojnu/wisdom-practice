@@ -82,7 +82,7 @@ export default function DashboardLayout() {
             </li>
             <li>
               <NavLink
-                to="/dashboard/wisdom-list"
+                to="/dashboard/apply-toady-wisdom"
                 className={({ isActive }) =>
                   isActive
                     ? "flex items-center px-4 py-3 text-[#388E3C] bg-[#388E3C]/10 rounded-lg font-medium"
@@ -91,7 +91,33 @@ export default function DashboardLayout() {
                 onClick={closeSidebar}
               >
                 <Templatesicon />
-                Your Wisdom List
+                Apply Wisdom
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/dashboard/daily-wisdom"
+                className={({ isActive }) =>
+                  isActive
+                    ? "flex items-center px-4 py-3 text-[#388E3C] bg-[#388E3C]/10 rounded-lg font-medium"
+                    : "flex items-center px-4 py-3 text-gray-600 hover:text-[#388E3C] hover:bg-gray-50 rounded-lg transition-colors"
+                }
+                onClick={closeSidebar}
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+                <span className="lg:block hidden ml-3">Daily Wisdom</span>
               </NavLink>
             </li>
           </ul>

@@ -7,12 +7,13 @@ import AuthProvider from "./contexts/AuthContext";
 import ProfileProvider from "./contexts/ProfileContext";
 import WisdomLogsProvider from "./contexts/WisdomLogsContext";
 import WisdomsProvider from "./contexts/WisdomsContext";
+import ApplyTodayWisdom from "./pages/ApplyTodayWisdom";
+import DailyWisdomPage from "./pages/DailyWisdomPage";
 import DashboardPage from "./pages/DashboardPage";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
 import SignupPage from "./pages/SignupPage";
-import WisdomTemplatesPage from "./pages/WisdomTemplatesPage";
 
 export default function App() {
   return (
@@ -41,9 +42,10 @@ export default function App() {
                     <Route index element={<DashboardPage />} />
                     <Route path="profile" element={<ProfilePage />} />
                     <Route
-                      path="wisdom-list"
-                      element={<WisdomTemplatesPage />}
+                      path="apply-toady-wisdom"
+                      element={<ApplyTodayWisdom />}
                     />
+                    <Route path="daily-wisdom" element={<DailyWisdomPage />} />
                   </Route>
                 </Route>
               </Routes>
