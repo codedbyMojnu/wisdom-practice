@@ -1,15 +1,23 @@
 import { useState } from "react";
 import AddWisdomModal from "../components/ui/dashboard/AddWisdomModal";
+import ConfirmDialog from "../components/ui/dashboard/ConfirmDialog";
+import EditWisdomModal from "../components/ui/dashboard/EditWisdomModal";
 import DashboardHeader from "../components/ui/DashboardHeader";
 import { useAuthData } from "../contexts/AuthContext";
 import { useWisdomLogs } from "../contexts/WisdomLogsContext";
 import { useWisdomsData } from "../contexts/WisdomsContext";
-import { saveDailyWisdom } from "../utils/fireStoreDB";
+import { deleteWisdomData, saveDailyWisdom } from "../utils/fireStoreDB";
 
 export default function ApplyTodayWisdom() {
   const [openModal, setOpenModal] = useState(false);
+  const [editWisdom, setEditWisdom] = useState(null);
+  const [deleteDialog, setDeleteDialog] = useState({
+    isOpen: false,
+    wisdom: null,
+  });
+  const [isDeleting, setIsDeleting] = useState(false);
   const { wisdomLogs, setWisdomLogs } = useWisdomLogs();
-  const { wisdomsData } = useWisdomsData();
+  const { wisdomsData, setWisdomsData } = useWisdomsData();
   const { authData } = useAuthData();
 
   // Get today's date
@@ -81,6 +89,38 @@ export default function ApplyTodayWisdom() {
           return prev;
       }
     });
+  }
+
+  // Handle wisdom deletion
+  async function handleDeleteWisdom() {
+    if (!deleteDialog.wisdom) return;
+
+    setIsDeleting(true);
+    try {
+      const success = await deleteWisdomData(
+        authData?.user?.uid,
+        deleteDialog.wisdom.id
+      );
+
+      if (success) {
+        // Update local state by removing the deleted wisdom
+        setWisdomsData((prev) => {
+          const filteredWisdoms =
+            prev.wisdoms?.filter((w) => w.id !== deleteDialog.wisdom.id) || [];
+          return {
+            ...prev,
+            wisdoms: filteredWisdoms,
+          };
+        });
+
+        // Close the dialog
+        setDeleteDialog({ isOpen: false, wisdom: null });
+      }
+    } catch (error) {
+      console.error("Error deleting wisdom:", error);
+    } finally {
+      setIsDeleting(false);
+    }
   }
 
   // Get wisdom statistics for display
@@ -214,17 +254,60 @@ export default function ApplyTodayWisdom() {
                         #{index + 1}
                       </span>
                     </div>
-                    {wisdom.isLoggedToday && (
-                      <div
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          wisdom.todayStatus
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
+                    <div className="flex items-center gap-2">
+                      {/* Edit and Delete Buttons */}
+                      <button
+                        onClick={() => setEditWisdom(wisdom)}
+                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        title="Edit wisdom"
                       >
-                        {wisdom.todayStatus ? "✅ Applied" : "❌ Missed"}
-                      </div>
-                    )}
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        onClick={() =>
+                          setDeleteDialog({ isOpen: true, wisdom })
+                        }
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Delete wisdom"
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
+                        </svg>
+                      </button>
+                      {wisdom.isLoggedToday && (
+                        <div
+                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                            wisdom.todayStatus
+                              ? "bg-green-100 text-green-700"
+                              : "bg-red-100 text-red-700"
+                          }`}
+                        >
+                          {wisdom.todayStatus ? "✅ Applied" : "❌ Missed"}
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   {/* Category */}
@@ -308,6 +391,26 @@ export default function ApplyTodayWisdom() {
 
       {/* Add Wisdom Modal */}
       {openModal && <AddWisdomModal onClose={() => setOpenModal(false)} />}
+
+      {/* Edit Wisdom Modal */}
+      {editWisdom && (
+        <EditWisdomModal
+          wisdom={editWisdom}
+          onClose={() => setEditWisdom(null)}
+        />
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={() => setDeleteDialog({ isOpen: false, wisdom: null })}
+        onConfirm={handleDeleteWisdom}
+        title="Delete Wisdom"
+        message={`Are you sure you want to delete "${deleteDialog.wisdom?.wisdomName}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        isLoading={isDeleting}
+      />
     </div>
   );
 }

@@ -91,6 +91,77 @@ export async function getWisdomData(userId) {
     }
 }
 
+// Update wisdom data for a user
+export async function updateWisdomData(userId, updatedWisdom) {
+    try {
+        const docRef = doc(db, "wisdomsData", userId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            const wisdoms = data.wisdoms || [];
+
+            // Clean the updated wisdom object to remove undefined values
+            const cleanedWisdom = {};
+            Object.keys(updatedWisdom).forEach(key => {
+                if (updatedWisdom[key] !== undefined && updatedWisdom[key] !== null) {
+                    cleanedWisdom[key] = updatedWisdom[key];
+                }
+            });
+
+            console.log("Original wisdom:", updatedWisdom);
+            console.log("Cleaned wisdom:", cleanedWisdom);
+
+            // Find and update the wisdom with matching ID
+            const updatedWisdoms = wisdoms.map(wisdom =>
+                wisdom.id === updatedWisdom.id ? { ...wisdom, ...cleanedWisdom } : wisdom
+            );
+
+            await updateDoc(docRef, {
+                wisdoms: updatedWisdoms
+            });
+
+            console.log("Wisdom updated successfully");
+            toast.success("Wisdom updated successfully!");
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.error("Error updating wisdom:", error.message);
+        toast.error("Failed to update wisdom");
+        return false;
+    }
+}
+
+// Delete wisdom data for a user
+export async function deleteWisdomData(userId, wisdomId) {
+    try {
+        const docRef = doc(db, "wisdomsData", userId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            const wisdoms = data.wisdoms || [];
+
+            // Filter out the wisdom with matching ID
+            const filteredWisdoms = wisdoms.filter(wisdom => wisdom.id !== wisdomId);
+
+            await updateDoc(docRef, {
+                wisdoms: filteredWisdoms
+            });
+
+            console.log("Wisdom deleted successfully");
+            toast.success("Wisdom deleted successfully!");
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.error("Error deleting wisdom:", error.message);
+        toast.error("Failed to delete wisdom");
+        return false;
+    }
+}
+
 
 // Save or update daily wisdom logs
 // Save or update daily wisdom logs
