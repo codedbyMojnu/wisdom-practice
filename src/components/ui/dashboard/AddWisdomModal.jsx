@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { useAuthData } from "../../../contexts/AuthContext";
-import { useWisdomsData } from "../../../contexts/WisdomsContext";
-import { saveWisdomDataToFireStore } from "../../../utils/fireStoreDB";
-import { wisdomCategories } from "../../../utils/wisdomCategory";
+import { wisdomCategories } from "../../../constants/wisdomCategory";
+import { useAuth } from "../../../hooks/useAuth";
+import { useWisdoms } from "../../../hooks/useWisdoms";
+import { saveWisdomDataToFireStore } from "../../../services/fireStoreDB";
+import Button from "../../ui/primitives/Button";
+import Modal from "../../ui/primitives/Modal";
 
-export default function AddWisdomModal({ onClose }) {
+export default function AddWisdomModal({ onClose, isOpen = true }) {
   const [loading, setLoading] = useState(false);
-  const { authData } = useAuthData();
-  const { wisdomsData, setWisdomsData } = useWisdomsData();
+  const { authData } = useAuth();
+  const { wisdomsData, setWisdomsData } = useWisdoms();
+
   const {
     register,
     handleSubmit,
@@ -44,147 +47,119 @@ export default function AddWisdomModal({ onClose }) {
     }
   }
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-      <div
-        className="bg-[#F9F9EB] rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto transform transition-all duration-200 ease-out opacity-100 scale-100 translate-y-0"
-        style={{
-          boxShadow:
-            "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)",
-        }}
-      >
-        <div className="p-6">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-[#240F0F]">
-              Add New Wisdom Name To Practice
-            </h2>
-            <button
-              className="text-gray-500 hover:text-gray-700 transition-colors p-1 rounded-full hover:bg-gray-100"
-              onClick={onClose}
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                ></path>
-              </svg>
-            </button>
-          </div>
-
-          {/* Form */}
-          <form
-            onSubmit={handleSubmit(handleWisdomSubmit)}
-            className="space-y-4"
-          >
-            {/* Wisdom Title */}
-            <div>
-              <label className="block text-sm font-medium text-[#240F0F] mb-2">
-                Wisdom Name
-              </label>
-              <input
-                type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#388E3C] focus:border-transparent transition-all"
-                placeholder="Enter wisdom name"
-                {...register("wisdomName", {
-                  required: "Wisdom name is required",
-                  minLength: {
-                    value: 4,
-                    message: "Wisdom name must be at least 4 characters long",
-                  },
-                })}
-              />
-              {errors.wisdomTitle && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.wisdomTitle.message}
-                </p>
-              )}
-            </div>
-
-            {/* Description */}
-            <div>
-              <label className="block text-sm font-medium text-[#240F0F] mb-2">
-                Description
-              </label>
-              <textarea
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#388E3C] focus:border-transparent transition-all resize-none"
-                rows="3"
-                placeholder="Describe this wisdom..."
-                {...register("description", {
-                  required: "Description is required",
-                  minLength: {
-                    value: 10,
-                    message: "Description must be at least 10 characters long",
-                  },
-                })}
-              ></textarea>
-              {errors.description && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.description.message}
-                </p>
-              )}
-            </div>
-
-            {/* Category */}
-            <div>
-              <label className="block text-sm font-medium text-[#240F0F] mb-2">
-                Category
-              </label>
-              <select
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#388E3C] focus:border-transparent transition-all"
-                {...register("category", {
-                  required: "Category is required",
-                })}
-              >
-                {wisdomCategories?.map((category) => (
-                  <option key={category}>{category}</option>
-                ))}
-              </select>
-              {errors.category && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.category.message}
-                </p>
-              )}
-            </div>
-
-            {/* Buttons */}
-            <div className="flex gap-3 pt-4">
-              <button
-                onClick={onClose}
-                type="button"
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="flex-1 bg-[#388E3C] text-white py-2 px-4 rounded-md hover:bg-[#388E3C]/90 transition-colors flex items-center justify-center"
-              >
-                <svg
-                  className="w-4 h-4 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  ></path>
-                </svg>
-                {loading ? "Adding Wisdom..." : "Add Wisdom"}
-              </button>
-            </div>
-          </form>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      className="max-h-[92vh] w-full max-w-lg overflow-y-auto p-6"
+    >
+      <header className="mb-6 flex items-start justify-between">
+        <div className="space-y-1">
+          <h2 className="font-headline text-2xl font-semibold text-foreground">
+            Add New Wisdom
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Capture the wisdom you want to revisit throughout the week.
+          </p>
         </div>
-      </div>
-    </div>
+        {/* Close handled by Modal primitive */}
+      </header>
+
+      <form onSubmit={handleSubmit(handleWisdomSubmit)} className="space-y-5">
+        <div>
+          <label htmlFor="wisdomName" className="input-label">
+            Wisdom Name
+          </label>
+          <input
+            id="wisdomName"
+            type="text"
+            className="input-field"
+            placeholder="Enter wisdom name"
+            {...register("wisdomName", {
+              required: "Provide a wisdom name",
+              minLength: {
+                value: 4,
+                message: "At least 4 characters",
+              },
+            })}
+          />
+          {errors.wisdomName && (
+            <p className="mt-2 text-sm text-destructive">
+              {errors.wisdomName.message}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="description" className="input-label">
+            Description
+          </label>
+          <textarea
+            id="description"
+            className="input-field min-h-[120px] resize-none"
+            placeholder="Describe the intent or reminder for this wisdom"
+            {...register("description", {
+              required: "Add a short description",
+              minLength: {
+                value: 10,
+                message: "At least 10 characters",
+              },
+            })}
+          />
+          {errors.description && (
+            <p className="mt-2 text-sm text-destructive">
+              {errors.description.message}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="category" className="input-label">
+            Category
+          </label>
+          <select
+            id="category"
+            className="input-field"
+            defaultValue=""
+            {...register("category", {
+              required: "Choose a category",
+            })}
+          >
+            <option value="" disabled>
+              Select a category
+            </option>
+            {wisdomCategories?.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+          {errors.category && (
+            <p className="mt-2 text-sm text-destructive">
+              {errors.category.message}
+            </p>
+          )}
+        </div>
+
+        <div className="flex gap-3 pt-2">
+          <Button
+            type="button"
+            variant="secondary"
+            className="flex-1"
+            onClick={onClose}
+            disabled={loading}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            variant="primary"
+            className="flex-1"
+            disabled={loading}
+          >
+            {loading ? "Adding..." : "Add Wisdom"}
+          </Button>
+        </div>
+      </form>
+    </Modal>
   );
 }

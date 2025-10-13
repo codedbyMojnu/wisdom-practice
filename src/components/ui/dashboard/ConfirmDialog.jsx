@@ -11,25 +11,27 @@ export default function ConfirmDialog({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 p-4 pointer-events-none">
-      <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-md w-full pointer-events-auto">
+    <div className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="glass-card pointer-events-auto w-full max-w-md overflow-hidden">
         {/* Header */}
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
+        <div className="border-b border-border/70 p-5">
+          <h2 className="font-headline text-xl font-semibold text-foreground">
+            {title}
+          </h2>
         </div>
 
         {/* Content */}
         <div className="p-6">
-          <p className="text-gray-600">{message}</p>
+          <p className="text-muted-foreground">{message}</p>
         </div>
 
         {/* Actions */}
-        <div className="p-6 border-t border-gray-200 flex gap-3">
+        <div className="flex gap-4 border-t border-border/70 p-5">
           <button
             type="button"
             onClick={onClose}
             disabled={isLoading}
-            className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-medium transition-all duration-200 disabled:opacity-50"
+            className="btn btn-secondary flex-1"
           >
             {cancelText}
           </button>
@@ -37,12 +39,12 @@ export default function ConfirmDialog({
             type="button"
             onClick={onConfirm}
             disabled={isLoading}
-            className="flex-1 bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-xl font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="btn btn-destructive flex-1"
           >
             {isLoading ? (
               <>
                 <svg
-                  className="animate-spin w-4 h-4"
+                  className="h-4 w-4 animate-spin"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

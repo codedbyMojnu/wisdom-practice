@@ -1,6 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useState } from "react";
 
-const WisdomsContext = createContext(null);
+export const WisdomsContext = createContext(null);
 
 export default function WisdomsProvider({ children }) {
   const [wisdomsData, setWisdomsData] = useState([]);
@@ -9,12 +9,4 @@ export default function WisdomsProvider({ children }) {
       {children}
     </WisdomsContext.Provider>
   );
-}
-
-export function useWisdomsData() {
-  const context = useContext(WisdomsContext);
-  if (!context) {
-    throw new Error("useWisdomsData must be used within a WisdomsProvider");
-  }
-  return context;
 }

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import Card from "../../ui/primitives/Card";
 import { useWisdomLogs } from "../../../contexts/WisdomLogsContext";
 import WisdomProgress from "./WisdomProgress";
 
@@ -95,61 +96,53 @@ export default function WisdomProgressChart() {
     labels.length === 0 || (applied.length === 0 && missed.length === 0);
 
   return (
-    <div className="lg:col-span-2">
-      <div className="bg-[#F9F9EB] rounded-lg border shadow-sm">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h3 className="font-headline text-lg font-semibold">
-                Wisdom Progress
-              </h3>
-              <p className="text-sm text-gray-500">
-                Your applied and missed wisdom entries over time.
-              </p>
-            </div>
+    <Card className="p-6 lg:col-span-2">
+      <div className="mb-4 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+        <div>
+          <h3 className="font-headline text-2xl font-semibold text-foreground">
+            Wisdom Progress
+          </h3>
+          <p className="text-sm text-muted-foreground/90">
+            Your applied and missed wisdom entries over time.
+          </p>
+        </div>
 
-            <div className="flex items-center space-x-2">
-              <select
-                value={viewType}
-                onChange={(e) => setViewType(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#388E3C]"
-              >
-                <option value="yearly">Yearly</option>
-                <option value="monthly">Monthly</option>
-              </select>
+        <div className="flex items-center gap-2">
+          <select
+            value={viewType}
+            onChange={(e) => setViewType(e.target.value)}
+            className="input-field"
+          >
+            <option value="yearly">Yearly</option>
+            <option value="monthly">Monthly</option>
+          </select>
 
-              {viewType === "monthly" && (
-                <select
-                  value={selectedYear || ""}
-                  onChange={(e) => setSelectedYear(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#388E3C]"
-                >
-                  {allYears.map((y) => (
-                    <option key={y} value={y}>
-                      {y}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </div>
-          </div>
-
-          {/* Chart area or "No data" */}
-          <div className="relative h-[250px] w-full rounded-md flex items-center justify-center text-gray-400">
-            {noData ? (
-              <div className="text-center text-sm text-gray-500">
-                No data to display.
-              </div>
-            ) : (
-              <WisdomProgress
-                labels={labels}
-                applied={applied}
-                missed={missed}
-              />
-            )}
-          </div>
+          {viewType === "monthly" && (
+            <select
+              value={selectedYear || ""}
+              onChange={(e) => setSelectedYear(e.target.value)}
+              className="input-field"
+            >
+              {allYears.map((y) => (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
       </div>
-    </div>
+
+      {/* Chart area or "No data" */}
+      <div className="relative flex h-[250px] w-full items-center justify-center rounded-md text-muted-foreground">
+        {noData ? (
+          <div className="text-center text-sm text-muted-foreground">
+            No data to display.
+          </div>
+        ) : (
+          <WisdomProgress labels={labels} applied={applied} missed={missed} />
+        )}
+      </div>
+    </Card>
   );
 }

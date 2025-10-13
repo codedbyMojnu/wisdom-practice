@@ -1,11 +1,11 @@
 import { getAuth } from "firebase/auth";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { useAuthData } from "../../contexts/AuthContext";
-import { handleChangePassword } from "../../utils/firebaseAuth";
+import { useAuth } from "../../hooks/useAuth";
+import { handleChangePassword } from "../../services/firebaseAuth";
 
 export default function ResetPassword() {
-  const { authData } = useAuthData();
+  const { authData } = useAuth();
   const auth = getAuth();
   const {
     register,

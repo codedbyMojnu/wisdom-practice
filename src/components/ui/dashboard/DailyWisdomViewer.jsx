@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useWisdomLogs } from "../../../contexts/WisdomLogsContext";
+import { useWisdomLogs } from "../../../hooks/useWisdomLogs";
 
 export default function DailyWisdomViewer() {
   const [selectedDate, setSelectedDate] = useState(
@@ -136,117 +136,129 @@ export default function DailyWisdomViewer() {
   const currentStreak = getStreak(selectedDate);
 
   return (
-    <div className="bg-[#F9F9EB] rounded-lg border shadow-sm">
-      <div className="p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
-          <div>
-            <h3 className="font-headline text-lg font-semibold mb-2">
-              Daily Wisdom Viewer
-            </h3>
-            <p className="text-sm text-gray-500">
-              Select any date to view your wisdom practice for that day
-            </p>
-          </div>
+    <section className="glass-card space-y-6 p-6 md:p-7">
+      <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+        <div className="space-y-2">
+          <h3 className="font-headline text-2xl font-semibold text-foreground">
+            Daily Wisdom Viewer
+          </h3>
+          <p className="text-sm text-muted-foreground/90">
+            Select any date to review how you practiced wisdom that day.
+          </p>
+        </div>
 
-          {/* Date Selector */}
-          <div className="flex flex-col sm:flex-row gap-3 mt-4 sm:mt-0">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative">
             <input
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+              className="input-field w-full min-w-[180px] appearance-none px-4 sm:w-auto"
               max={new Date().toISOString().split("T")[0]}
             />
-
-            {/* Quick Date Navigation */}
-            <div className="flex gap-2">
-              <button
-                onClick={() =>
-                  setSelectedDate(new Date().toISOString().split("T")[0])
-                }
-                className="px-3 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition text-sm"
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+              <svg
+                className="h-5 w-5 text-muted-foreground"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
               >
-                Today
+                <path
+                  fillRule="evenodd"
+                  d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <button
+              onClick={() =>
+                setSelectedDate(new Date().toISOString().split("T")[0])
+              }
+              className="btn btn-primary min-w-[80px]"
+            >
+              Today
+            </button>
+            {availableDates.length > 0 && (
+              <button
+                onClick={() => setSelectedDate(availableDates[0])}
+                className="btn btn-secondary min-w-[80px]"
+              >
+                Latest
               </button>
-              {availableDates.length > 0 && (
-                <button
-                  onClick={() => setSelectedDate(availableDates[0])}
-                  className="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition text-sm"
-                >
-                  Latest
-                </button>
-              )}
-            </div>
+            )}
           </div>
         </div>
+      </div>
 
-        {/* Date Statistics */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
-          <div className="bg-white rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-gray-800">
-              {dateStats.total}
-            </div>
-            <div className="text-sm text-gray-600">Total Wisdoms</div>
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+        <div className="surface-card flex flex-col items-center justify-center gap-1 p-4 text-center">
+          <div className="text-2xl font-bold text-foreground">
+            {dateStats.total}
           </div>
-          <div className="bg-green-100 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-green-700">
-              {dateStats.applied}
-            </div>
-            <div className="text-sm text-green-600">Applied</div>
+          <p className="text-sm text-muted-foreground">Total Wisdoms</p>
+        </div>
+        <div className="flex flex-col items-center justify-center gap-1 rounded-2xl border border-primary/20 bg-primary/10 p-4 text-center">
+          <div className="text-2xl font-bold text-primary">
+            {dateStats.applied}
           </div>
-          <div className="bg-red-100 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-red-700">
-              {dateStats.missed}
-            </div>
-            <div className="text-sm text-red-600">Missed</div>
+          <p className="text-sm text-primary">Applied</p>
+        </div>
+        <div className="flex flex-col items-center justify-center gap-1 rounded-2xl border border-destructive/20 bg-destructive/10 p-4 text-center">
+          <div className="text-2xl font-bold text-destructive">
+            {dateStats.missed}
           </div>
-          <div className="bg-blue-100 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-blue-700">
-              {dateStats.percentage}%
-            </div>
-            <div className="text-sm text-blue-600">Success Rate</div>
+          <p className="text-sm text-destructive">Missed</p>
+        </div>
+        <div className="surface-card flex flex-col items-center justify-center gap-1 p-4 text-center">
+          <div className="text-2xl font-bold text-foreground">
+            {dateStats.percentage}%
           </div>
-          <div className="bg-yellow-100 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-yellow-700">
-              {currentStreak}
-            </div>
-            <div className="text-sm text-yellow-600">Day Streak</div>
+          <p className="text-sm text-muted-foreground">Success Rate</p>
+        </div>
+        <div className="surface-card flex flex-col items-center justify-center gap-1 p-4 text-center">
+          <div className="text-2xl font-bold text-foreground">
+            {currentStreak}
+          </div>
+          <p className="text-sm text-muted-foreground">Current Streak</p>
+        </div>
+      </div>
+
+      {dateStats.total > 0 && (
+        <div>
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-sm font-medium text-muted-foreground">
+              Progress
+            </span>
+            <span className="text-sm text-muted-foreground/80">
+              {dateStats.applied} of {dateStats.total} completed
+            </span>
+          </div>
+          <div className="h-3 w-full overflow-hidden rounded-full bg-muted">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-primary to-primary/60 transition-all"
+              style={{ width: `${dateStats.percentage}%` }}
+            />
           </div>
         </div>
+      )}
 
-        {/* Progress Bar */}
-        {dateStats.total > 0 && (
-          <div className="mb-6">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-gray-700">
-                Progress
-              </span>
-              <span className="text-sm text-gray-500">
-                {dateStats.applied} of {dateStats.total} completed
-              </span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-3">
-              <div
-                className="bg-gradient-to-r from-green-400 to-green-600 h-3 rounded-full transition-all duration-500"
-                style={{ width: `${dateStats.percentage}%` }}
-              ></div>
-            </div>
-          </div>
-        )}
-
-        {/* Recent Dates Navigation */}
-        {recentDates.length > 0 && (
-          <div className="mb-6">
-            <h5 className="font-medium text-gray-700 mb-3">Recent Dates</h5>
-            <div className="flex flex-wrap gap-2">
-              {recentDates.map((date) => (
+      {recentDates.length > 0 && (
+        <div>
+          <h5 className="mb-3 font-medium text-foreground">Recent Dates</h5>
+          <div className="flex flex-wrap gap-2">
+            {recentDates.map((date) => {
+              const isSelected = selectedDate === date;
+              return (
                 <button
                   key={date}
                   onClick={() => setSelectedDate(date)}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
-                    selectedDate === date
-                      ? "bg-primary text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  className={`btn px-3 py-1.5 text-sm ${
+                    isSelected
+                      ? "btn-primary"
+                      : "btn-secondary border-border/70 bg-transparent hover:bg-muted/50"
                   }`}
                 >
                   {new Date(date).toLocaleDateString("en-US", {
@@ -254,153 +266,126 @@ export default function DailyWisdomViewer() {
                     day: "numeric",
                   })}
                 </button>
-              ))}
-            </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <div>
+        <h4 className="mb-3 font-semibold text-foreground">
+          {formatDate(selectedDate)}
+        </h4>
+        {dateStats.total === 0 ? (
+          <div className="rounded-xl border border-border/60 bg-card/70 px-6 py-10 text-center text-muted-foreground">
+            <p>No wisdom logs found for this date yet.</p>
+            <p className="mt-2 text-sm">
+              Log a wisdom practice to start building your streak.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {selectedDateLogs.map((wisdom, index) => (
+              <div
+                key={`${wisdom.id}-${index}`}
+                className={`flex items-center justify-between rounded-xl border px-4 py-3 ${
+                  wisdom.applied
+                    ? "border-primary/25 bg-primary/10"
+                    : "border-destructive/25 bg-destructive/10"
+                }`}
+              >
+                <div className="flex-1">
+                  <h5 className="font-medium text-foreground">
+                    {wisdom.wisdomName}
+                  </h5>
+                  <span className="mt-1 inline-block rounded-full bg-card/70 px-2 py-1 text-xs font-medium text-muted-foreground">
+                    {wisdom.category}
+                  </span>
+                </div>
+                <span
+                  className={`text-sm font-semibold ${
+                    wisdom.applied ? "text-primary" : "text-destructive"
+                  }`}
+                >
+                  {wisdom.applied ? "Applied" : "Missed"}
+                </span>
+              </div>
+            ))}
           </div>
         )}
+      </div>
 
-        {/* Selected Date Display */}
-        <div className="mb-6">
-          <h4 className="font-semibold text-gray-800 mb-2">
-            {formatDate(selectedDate)}
-          </h4>
-          {dateStats.total === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <p>No wisdom logs found for this date.</p>
-              <p className="text-sm mt-2">
-                Start practicing wisdom to see your progress!
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {selectedDateLogs.map((wisdom, index) => (
-                <div
-                  key={`${wisdom.id}-${index}`}
-                  className={`flex items-center justify-between p-4 rounded-lg border ${
-                    wisdom.applied
-                      ? "bg-green-50 border-green-200"
-                      : "bg-red-50 border-red-200"
-                  }`}
-                >
-                  <div className="flex-1">
-                    <h5 className="font-medium text-gray-800 mb-1">
-                      {wisdom.wisdomName}
-                    </h5>
-                    <span
-                      className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                        wisdom.applied
-                          ? "bg-green-200 text-green-800"
-                          : "bg-red-200 text-red-800"
-                      }`}
-                    >
-                      {wisdom.category}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`text-sm font-medium ${
-                        wisdom.applied ? "text-green-700" : "text-red-700"
-                      }`}
-                    >
-                      {wisdom.applied ? "Applied" : "Missed"}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Progress Per Wisdom with Percentage Bars */}
-        {wisdomStats.length > 0 && (
-          <div className="border-t pt-6">
-            <h5 className="font-medium text-gray-800 mb-4">
-              Your Progress Per Wisdom
-            </h5>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {wisdomStats.map((wisdom) => (
+      {wisdomStats.length > 0 && (
+        <div className="border-t border-border/70 pt-6">
+          <h5 className="mb-4 font-medium text-foreground">
+            Your Progress Per Wisdom
+          </h5>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {wisdomStats.map((wisdom) => {
+              const isGood = wisdom.isGoodProgress;
+              return (
                 <div
                   key={wisdom.id}
-                  className={`border rounded-xl p-4 hover:shadow-lg transition-all duration-200 ${
-                    wisdom.isGoodProgress
-                      ? "border-green-300 bg-green-50/50"
-                      : "border-red-300 bg-red-50/50"
+                  className={`flex flex-col rounded-2xl border p-5 transition-all ${
+                    isGood
+                      ? "border-primary/20 bg-primary/10"
+                      : "border-destructive/20 bg-destructive/10"
                   }`}
                 >
-                  {/* Wisdom Header */}
-                  <div className="flex justify-between items-start mb-3">
+                  <div className="mb-3 flex items-start justify-between gap-3">
                     <div className="flex-1">
-                      <h6 className="font-semibold text-gray-800 mb-1">
+                      <h6 className="font-semibold text-foreground">
                         {wisdom.wisdomName}
                       </h6>
-                      <span className="inline-block px-2 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-700">
+                      <span className="mt-1 inline-block rounded-full bg-card/80 px-2 py-1 text-xs font-medium text-muted-foreground">
                         {wisdom.category}
                       </span>
                     </div>
-                    <div
-                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        wisdom.isGoodProgress
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
+                    <span
+                      className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${
+                        isGood ? "text-primary" : "text-destructive"
                       }`}
                     >
                       {wisdom.statusText}
-                    </div>
+                    </span>
                   </div>
 
-                  {/* Progress Statistics */}
-                  <div className="mb-3">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm text-gray-600">
+                  <div className="mb-4">
+                    <div className="mb-2 flex items-center justify-between text-sm text-muted-foreground">
+                      <span>
                         Applied: {wisdom.appliedCount}/{wisdom.total}
                       </span>
                       <span
-                        className={`text-sm font-semibold ${
-                          wisdom.isGoodProgress
-                            ? "text-green-600"
-                            : "text-red-600"
-                        }`}
+                        className={isGood ? "text-primary" : "text-destructive"}
                       >
                         {wisdom.percentage}%
                       </span>
                     </div>
-
-                    {/* Progress Bar */}
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted">
                       <div
-                        className={`h-2.5 rounded-full transition-all duration-500 ${
-                          wisdom.isGoodProgress
-                            ? "bg-gradient-to-r from-green-400 to-green-600"
-                            : "bg-gradient-to-r from-red-400 to-red-600"
+                        className={`h-full rounded-full transition-all ${
+                          isGood
+                            ? "bg-gradient-to-r from-primary to-primary/70"
+                            : "bg-gradient-to-r from-destructive to-destructive/70"
                         }`}
                         style={{
                           width: `${Math.min(wisdom.percentage, 100)}%`,
                         }}
-                      ></div>
+                      />
                     </div>
                   </div>
 
-                  {/* Progress Message */}
-                  <div className="text-center">
-                    <p
-                      className={`text-xs ${
-                        wisdom.isGoodProgress
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {wisdom.isGoodProgress
-                        ? `Excellent! You're maintaining ${wisdom.percentage}% success rate`
-                        : `Keep practicing! Aim for 80% or higher (currently ${wisdom.percentage}%)`}
-                    </p>
-                  </div>
+                  <p className="mt-auto text-center text-xs text-muted-foreground">
+                    {isGood
+                      ? `Excellent! You're maintaining ${wisdom.percentage}% success.`
+                      : `Keep practicing and aim for 80%+ consistency (currently ${wisdom.percentage}%).`}
+                  </p>
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </section>
   );
 }

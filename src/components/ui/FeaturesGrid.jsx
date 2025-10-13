@@ -33,7 +33,7 @@ export default function FeaturesGrid() {
       {featuresData.map((feature, index) => (
         <div
           key={index}
-          className="bg-[#F9F9EB]/90 backdrop-blur-sm rounded-xl p-6 shadow-xl hover:scale-105 transition-transform"
+          className="glass-card p-6 transition-transform hover:scale-[1.02]"
         >
           <div
             className={`w-16 h-16 ${feature.iconBg} rounded-full flex items-center justify-center mx-auto mb-4`}

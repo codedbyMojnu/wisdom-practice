@@ -1,9 +1,12 @@
 import { ArcElement, Chart as ChartJS, Legend, Title, Tooltip } from "chart.js";
+import Card from "../../ui/primitives/Card";
 import { useMemo } from "react";
 import { useWisdomLogs } from "../../../contexts/WisdomLogsContext";
 import CategoryPercentage from "./CategoryPercentange";
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
+
+const palette = ["#388E3C", "#D4AC0D", "#6D9773", "#3A5564", "#A3684A"];
 
 export default function CategoryPercentageChart() {
   const { wisdomLogs } = useWisdomLogs();
@@ -17,7 +20,7 @@ export default function CategoryPercentageChart() {
       const allWisdoms = Object.values(wisdomLogs.dailyBasisWisdomLogs)
         .flatMap((day) => day?.wisdoms || [])
         .map((w) => ({ ...w, category: w?.category }))
-        .filter((w) => w.category);
+        .filter((w) => Boolean(w.category));
 
       if (allWisdoms.length === 0) {
         return { categories: [], categoryData: null, dangerCategories: [] };
@@ -34,12 +37,11 @@ export default function CategoryPercentageChart() {
       const categories = Object.keys(categoryStats);
       const percentages = categories.map((cat) => {
         const { applied, total } = categoryStats[cat];
-        return total > 0 ? ((applied / total) * 100).toFixed(2) : 0;
+        return total > 0 ? Number(((applied / total) * 100).toFixed(2)) : 0;
       });
 
-      // **Danger categories: less than 80%**
       const dangerCategories = categories.filter(
-        (cat, i) => percentages[i] < 80
+        (cat, index) => percentages[index] < 80
       );
 
       const categoryData = {
@@ -47,13 +49,9 @@ export default function CategoryPercentageChart() {
         datasets: [
           {
             data: percentages,
-            backgroundColor: [
-              "rgba(59, 130, 246, 0.8)",
-              "rgba(245, 158, 11, 0.8)",
-              "rgba(100, 116, 139, 0.8)",
-              "rgba(34, 197, 94, 0.8)",
-              "rgba(168, 85, 247, 0.8)",
-            ],
+            backgroundColor: categories.map(
+              (_, index) => palette[index % palette.length] + "CC"
+            ),
             borderColor: "#ffffff",
             borderWidth: 2,
           },
@@ -68,35 +66,38 @@ export default function CategoryPercentageChart() {
   }, [wisdomLogs]);
 
   return (
-    <div className="bg-[#F9F9EB] rounded-lg border shadow-sm">
-      <div className="p-6">
-        <h3 className="text-lg font-semibold mb-2">Category Breakdown</h3>
-        <p className="text-sm text-gray-500 mb-4">
-          Your wisdom practice by category.
+    <Card className="p-6">
+      <header className="mb-4 space-y-1">
+        <h3 className="font-headline text-xl font-semibold text-foreground">
+          Category Breakdown
+        </h3>
+        <p className="text-sm text-muted-foreground">
+          Review how consistently you apply wisdom across categories.
         </p>
+      </header>
 
-        <div className="relative h-[250px] w-full rounded-md flex items-center justify-center text-gray-400">
-          {categoryData ? (
-            <CategoryPercentage categoryData={categoryData} />
-          ) : (
-            <span>No wisdom data</span>
-          )}
-        </div>
-
-        {/* Danger List */}
-        {dangerCategories.length > 0 && (
-          <div className="mt-4">
-            <h4 className="text-md font-semibold text-black mb-2">
-              ⚠ Danger Categories (less than 80%)
-            </h4>
-            <ul className="list-disc list-inside text-gray-500">
-              {dangerCategories.map((cat) => (
-                <li key={cat}>{cat}</li>
-              ))}
-            </ul>
-          </div>
+      <div className="relative flex h-[260px] w-full items-center justify-center rounded-xl border border-border/60 bg-card/70 p-4">
+        {categoryData ? (
+          <CategoryPercentage categoryData={categoryData} />
+        ) : (
+          <span className="text-sm text-muted-foreground">
+            No wisdom data yet.
+          </span>
         )}
       </div>
-    </div>
+
+      {dangerCategories.length > 0 && (
+        <div className="mt-5 rounded-lg border border-destructive/20 bg-destructive/10 p-4">
+          <h4 className="font-semibold text-destructive">
+            Focus Areas (under 80% consistency)
+          </h4>
+          <ul className="mt-2 list-disc list-inside space-y-1 text-sm text-destructive/90">
+            {dangerCategories.map((cat) => (
+              <li key={cat}>{cat}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </Card>
   );
 }

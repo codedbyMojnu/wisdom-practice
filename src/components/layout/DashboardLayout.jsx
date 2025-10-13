@@ -1,17 +1,18 @@
 import { useState } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import DashboardIcon from "../../assets/icons/dashboardIcon";
-import HorizontalLine from "../../assets/icons/horizontalLine";
 import ProfileIcon from "../../assets/icons/profileIcon";
 import SignoutIcon from "../../assets/icons/signOut";
 import Templatesicon from "../../assets/icons/templatesIcon";
-import { useProfile } from "../../contexts/ProfileContext";
-import { useWisdomsData } from "../../contexts/WisdomsContext";
-import { handleFirebaseSignout } from "../../utils/firebaseAuth";
+import { useProfile } from "../../hooks/useProfile";
+import { useWisdoms } from "../../hooks/useWisdoms";
+import { handleFirebaseSignout } from "../../services/firebaseAuth";
+import DashboardHeader from "../ui/DashboardHeader";
 
 export default function DashboardLayout() {
   const navigate = useNavigate();
-  const { setWisdomsData } = useWisdomsData();
+  const location = useLocation();
+  const { setWisdomsData } = useWisdoms();
   const { clearProfileData } = useProfile();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -32,61 +33,55 @@ export default function DashboardLayout() {
     setIsSidebarOpen(false);
   };
 
+  const headerName = (() => {
+    const path = location.pathname || "";
+    if (path.includes("/dashboard/profile")) return "Profile";
+    if (path.includes("/dashboard/apply-today-wisdom")) return "Apply Wisdom";
+    if (path.includes("/dashboard/daily-wisdom")) return "Daily Wisdom";
+    return "Dashboard";
+  })();
+
   return (
-    <div className="font-body bg-background text-foreground min-h-screen">
+    <div className="min-h-screen bg-background font-body text-foreground">
       <div
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#F9F9EB] shadow-lg transform transition-transform duration-300 ease-in-out ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 w-64 transform border-r border-border bg-card shadow-lg transition-transform duration-300 ease-in-out ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0`}
       >
-        <div className="flex items-center justify-between h-16 px-6 border-b">
-          <h1 className="text-xl font-bold text-[#388E3C]">Wisdom Practice</h1>
+        <div className="flex h-16 items-center justify-between border-b border-border/80 px-6">
+          <h1 className="font-headline text-xl font-bold text-primary">
+            Wisdom Practice
+          </h1>
           <button
-            className="lg:hidden p-2 rounded-md hover:bg-gray-100"
+            className="rounded-md p-2 text-muted-foreground transition hover:bg-muted/60 lg:hidden"
             aria-label="Close sidebar"
             onClick={closeSidebar}
           >
-            <HorizontalLine />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
           </button>
         </div>
         <nav className="px-4 py-6">
           <ul className="space-y-2">
             <li>
               <NavLink
-                end
-                to="/dashboard"
+                to="/dashboard/apply-today-wisdom"
                 className={({ isActive }) =>
-                  isActive
-                    ? "flex items-center px-4 py-3 text-[#388E3C] bg-[#388E3C]/10 rounded-lg font-medium"
-                    : "flex items-center px-4 py-3 text-gray-600 hover:text-[#388E3C] hover:bg-gray-50 rounded-lg transition-colors"
-                }
-                onClick={closeSidebar}
-              >
-                <DashboardIcon />
-                Dashboard
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/dashboard/profile"
-                className={({ isActive }) =>
-                  isActive
-                    ? "flex items-center px-4 py-3 text-[#388E3C] bg-[#388E3C]/10 rounded-lg font-medium"
-                    : "flex items-center px-4 py-3 text-gray-600 hover:text-[#388E3C] hover:bg-gray-50 rounded-lg transition-colors"
-                }
-                onClick={closeSidebar}
-              >
-                <ProfileIcon />
-                Profile
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/dashboard/apply-toady-wisdom"
-                className={({ isActive }) =>
-                  isActive
-                    ? "flex items-center px-4 py-3 text-[#388E3C] bg-[#388E3C]/10 rounded-lg font-medium"
-                    : "flex items-center px-4 py-3 text-gray-600 hover:text-[#388E3C] hover:bg-gray-50 rounded-lg transition-colors"
+                  `flex items-center gap-3 rounded-lg px-4 py-3 font-medium transition-colors ${
+                    isActive
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+                  }`
                 }
                 onClick={closeSidebar}
               >
@@ -96,16 +91,35 @@ export default function DashboardLayout() {
             </li>
             <li>
               <NavLink
+                end
+                to="/dashboard"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 rounded-lg px-4 py-3 font-medium transition-colors ${
+                    isActive
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+                  }`
+                }
+                onClick={closeSidebar}
+              >
+                <DashboardIcon />
+                Dashboard
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
                 to="/dashboard/daily-wisdom"
                 className={({ isActive }) =>
-                  isActive
-                    ? "flex items-center px-4 py-3 text-[#388E3C] bg-[#388E3C]/10 rounded-lg font-medium"
-                    : "flex items-center px-4 py-3 text-gray-600 hover:text-[#388E3C] hover:bg-gray-50 rounded-lg transition-colors"
+                  `flex items-center gap-3 rounded-lg px-4 py-3 font-medium transition-colors ${
+                    isActive
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+                  }`
                 }
                 onClick={closeSidebar}
               >
                 <svg
-                  className="w-5 h-5"
+                  className="h-5 w-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -117,14 +131,30 @@ export default function DashboardLayout() {
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                   />
                 </svg>
-                <span className="lg:block ml-3">Daily Wisdom</span>
+                <span>Your Wisdoms By Date</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/dashboard/profile"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 rounded-lg px-4 py-3 font-medium transition-colors ${
+                    isActive
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+                  }`
+                }
+                onClick={closeSidebar}
+              >
+                <ProfileIcon />
+                Profile
               </NavLink>
             </li>
           </ul>
         </nav>
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t">
+        <div className="absolute inset-x-0 bottom-0 border-t border-border/70 bg-card px-4 py-4">
           <button
-            className="w-full flex items-center px-4 py-3 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
             onClick={handleSignOut}
           >
             <SignoutIcon />
@@ -134,14 +164,14 @@ export default function DashboardLayout() {
       </div>
 
       {/* Mobile menu button */}
-      <div className="lg:hidden fixed top-4 left-4 z-40">
+      <div className="fixed top-4 left-4 z-40 lg:hidden">
         <button
-          className="p-2 rounded-md bg-[#F9F9EB] shadow-lg hover:bg-gray-100"
+          className="rounded-md bg-card p-2 text-primary shadow-lg transition hover:bg-primary/10"
           aria-label="Open sidebar"
           onClick={toggleSidebar}
         >
           <svg
-            className="w-6 h-6 text-[#388E3C]"
+            className="h-6 w-6"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -155,8 +185,12 @@ export default function DashboardLayout() {
           </svg>
         </button>
       </div>
-
-      <Outlet />
+      <main className="lg:ml-64">
+        <DashboardHeader headerName={headerName} />
+        <div className="p-4 md:p-6 lg:p-8">
+          <Outlet />
+        </div>
+      </main>
     </div>
   );
 }

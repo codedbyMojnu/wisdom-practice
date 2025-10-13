@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAuthData } from "../../../contexts/AuthContext";
-import { useWisdomLogs } from "../../../contexts/WisdomLogsContext";
-import { useWisdomsData } from "../../../contexts/WisdomsContext";
-import { saveDailyWisdom } from "../../../utils/fireStoreDB";
+import { useAuth } from "../../../hooks/useAuth";
+import { useWisdomLogs } from "../../../hooks/useWisdomLogs";
+import { useWisdoms } from "../../../hooks/useWisdoms";
+import { saveDailyWisdom } from "../../../services/fireStoreDB";
 import AddWisdomModal from "./AddWisdomModal";
 
 export default function WisdomLogger() {
   const [openModal, setOpenModal] = useState(false);
-  const [applied, setApplied] = useState(false);
-  const { wisdomsData } = useWisdomsData();
-  const { wisdomLogs, setWisdomLogs } = useWisdomLogs();
-  const { authData } = useAuthData();
+  const [applied, setApplied] = useState(true);
+  const { authData } = useAuth();
+  const { wisdomsData } = useWisdoms();
+  const { setWisdomLogs } = useWisdomLogs();
 
   const {
     register,
@@ -37,123 +37,86 @@ export default function WisdomLogger() {
       applied,
     };
 
-    // 🔹 save to Firestore & update local state
     const status = await saveDailyWisdom(today, randomId, uid, wisdomLog);
 
     setWisdomLogs((prev) => {
-      switch (status) {
-        case "firstLog":
-          return {
-            uid,
-            dailyBasisWisdomLogs: {
-              [today]: { id: randomId, wisdoms: [wisdomLog] },
-            },
-          };
-
-        case "newDayLog":
-          return {
-            ...prev,
-            dailyBasisWisdomLogs: {
-              ...prev.dailyBasisWisdomLogs,
-              [today]: { id: randomId, wisdoms: [wisdomLog] },
-            },
-          };
-
-        case "todayDayExist":
-          return {
-            ...prev,
-            dailyBasisWisdomLogs: {
-              ...prev.dailyBasisWisdomLogs,
-              [today]: {
-                ...prev.dailyBasisWisdomLogs[today],
-                wisdoms: [
-                  ...prev.dailyBasisWisdomLogs[today].wisdoms,
-                  wisdomLog,
-                ],
-              },
-            },
-          };
-
-        default:
-          return prev; // 🛡️ fallback
+      const newLogs = { ...prev };
+      if (!newLogs.dailyBasisWisdomLogs) {
+        newLogs.dailyBasisWisdomLogs = {};
       }
+
+      if (status === "firstLog") {
+        newLogs.uid = uid;
+        newLogs.dailyBasisWisdomLogs[today] = {
+          id: randomId,
+          wisdoms: [wisdomLog],
+        };
+      } else if (status === "newDayLog") {
+        newLogs.dailyBasisWisdomLogs[today] = {
+          id: randomId,
+          wisdoms: [wisdomLog],
+        };
+      } else if (status === "todayDayExist") {
+        const todayLogs = newLogs.dailyBasisWisdomLogs[today]?.wisdoms || [];
+        newLogs.dailyBasisWisdomLogs[today].wisdoms = [...todayLogs, wisdomLog];
+      }
+
+      return newLogs;
     });
   }
 
+  const wisdomList = wisdomsData?.wisdoms || [];
+  const hasWisdom = wisdomList.length > 0;
+
   return (
-    <div className="bg-[#F9F9EB] rounded-lg border shadow-sm">
+    <section className="glass-card p-6">
       {openModal && <AddWisdomModal onClose={() => setOpenModal(false)} />}
-      <div className="p-6">
-        <h3 className="font-headline text-lg font-semibold mb-2">
+
+      <header className="mb-5 flex flex-col gap-2">
+        <h3 className="font-headline text-xl font-semibold text-foreground">
           Daily Wisdom Log
         </h3>
-        <p className="text-sm text-gray-500 mb-4">
-          What wisdom did you practice today?{" "}
-          {wisdomsData?.wisdoms?.length > 0 ? (
-            <span className="block text-green-500 mt-2">
-              Choose the wisdom name below...
-            </span>
-          ) : (
-            <span className="block text-red-400 mt-2">
-              You have no Wisdom. Please Add Wisdom by clicking the + icon.
-            </span>
-          )}
+        <p className="text-sm text-muted-foreground">
+          Track which wisdoms you applied or missed today.
         </p>
+      </header>
 
-        <form onSubmit={handleSubmit(handleWisdomLog)} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-[#240F0F] mb-2">
-              Select Wisdom
-            </label>
+      {!hasWisdom && (
+        <div className="mb-5 rounded-lg border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          You have no wisdom entries yet. Add one to start logging your day.
+        </div>
+      )}
 
-            <div className="flex flex-col sm:flex-row gap-2">
-              <select
-                className="w-full sm:flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#388E3C]"
-                {...register("wisdomId", {
-                  required: "Must Select a Wisdom Name",
-                })}
-              >
-                {wisdomsData?.wisdoms?.map(({ id, wisdomName }) => (
-                  <option key={id} value={id}>
-                    {wisdomName}
-                  </option>
-                ))}
-              </select>
-              {errors?.wisdomId && (
-                <p className="text-red-400">{errors?.wisdomId.message}</p>
-              )}
+      <form onSubmit={handleSubmit(handleWisdomLog)} className="space-y-5">
+        <div>
+          <label className="input-label" htmlFor="wisdomId">
+            Select Wisdom
+          </label>
+          <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+            <select
+              id="wisdomId"
+              className="input-field"
+              {...register("wisdomId", {
+                required: "Select a wisdom before logging",
+              })}
+            >
+              <option value="" disabled>
+                Choose a wisdom
+              </option>
+              {wisdomList.map(({ id, wisdomName }) => (
+                <option key={id} value={id}>
+                  {wisdomName}
+                </option>
+              ))}
+            </select>
 
-              <button
-                type="button"
-                className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center"
-                onClick={() => setOpenModal(true)}
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  ></path>
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <div className="flex gap-4">
             <button
-              type="submit"
-              className="flex-1 bg-[#388E3C] text-white py-2 px-4 rounded-md hover:bg-[#388E3C]/90 transition-colors flex items-center justify-center"
-              onClick={() => setApplied(true)}
-              disabled={!wisdomsData?.wisdoms?.length}
+              type="button"
+              className="btn btn-secondary shrink-0"
+              onClick={() => setOpenModal(true)}
             >
               <svg
-                className="w-4 h-4 mr-2"
+                className="h-5 w-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -162,36 +125,65 @@ export default function WisdomLogger() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth="2"
-                  d="M5 13l4 4L19 7"
-                ></path>
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
               </svg>
-              Applied
-            </button>
-
-            <button
-              type="submit"
-              className="flex-1 bg-[#D32F2F] text-white py-2 px-4 rounded-md hover:bg-[#D32F2F]/90 transition-colors flex items-center justify-center"
-              onClick={() => setApplied(false)}
-              disabled={!wisdomsData?.wisdoms?.length}
-            >
-              <svg
-                className="w-4 h-4 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                ></path>
-              </svg>
-              Missed
+              <span className="hidden sm:inline">Add New</span>
             </button>
           </div>
-        </form>
-      </div>
-    </div>
+          {errors?.wisdomId && (
+            <p className="mt-2 text-sm text-destructive">
+              {errors.wisdomId.message}
+            </p>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <button
+            type="submit"
+            className="btn btn-primary flex-1"
+            onClick={() => setApplied(true)}
+            disabled={!hasWisdom}
+          >
+            <svg
+              className="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+            Applied
+          </button>
+
+          <button
+            type="submit"
+            className="btn flex-1 bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            onClick={() => setApplied(false)}
+            disabled={!hasWisdom}
+          >
+            <svg
+              className="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+            Missed
+          </button>
+        </div>
+      </form>
+    </section>
   );
 }

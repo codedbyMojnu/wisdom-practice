@@ -5,10 +5,10 @@ import {
   useEffect,
   useState,
 } from "react";
-import { getUserInfo, updateUserInfo } from "../utils/fireStoreDB";
-import { useAuthData } from "./AuthContext";
+import { useAuth } from "../hooks/useAuth";
+import { getUserInfo, updateUserInfo } from "../services/fireStoreDB";
 
-const ProfileContext = createContext();
+export const ProfileContext = createContext();
 
 export default function ProfileProvider({ children }) {
   const [userInfo, setUserInfo] = useState(null);
@@ -16,7 +16,7 @@ export default function ProfileProvider({ children }) {
   const [error, setError] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  const { authData } = useAuthData();
+  const { authData } = useAuth();
 
   // Fetch user profile data
   const fetchUserProfile = useCallback(async (uid) => {

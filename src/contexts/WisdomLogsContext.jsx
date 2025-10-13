@@ -1,16 +1,16 @@
 import { createContext, useContext, useState } from "react";
 
-const WisdomsLogsContext = createContext();
+export const WisdomLogsContext = createContext();
 
 export default function WisdomLogsProvider({ children }) {
   const [wisdomLogs, setWisdomLogs] = useState(null);
   return (
-    <WisdomsLogsContext.Provider value={{ wisdomLogs, setWisdomLogs }}>
+    <WisdomLogsContext.Provider value={{ wisdomLogs, setWisdomLogs }}>
       {children}
-    </WisdomsLogsContext.Provider>
+    </WisdomLogsContext.Provider>
   );
 }
 
 export function useWisdomLogs() {
-  return useContext(WisdomsLogsContext);
+  return useContext(WisdomLogsContext);
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { useProfile } from "../contexts/ProfileContext";
+import { useProfile } from "../../hooks/useProfile";
 
 export default function ProfileData() {
   const [editMode, setEditMode] = useState(false);
