@@ -18,7 +18,7 @@ export async function registerWithEmailPassword(name, email, password) {
         return response.user;
 
     } catch (error) {
-        console.log(error.message);
+        throw new Error(error?.message || "Failed to create account");
     }
 }
 
@@ -29,7 +29,7 @@ export async function signInWithEmailPassword(email, password) {
 
         return response?.user;
     } catch (error) {
-        console.log(error.message);
+        throw new Error(error?.message || "Failed to sign in");
     }
 
 }
@@ -51,7 +51,7 @@ export async function signInWithGoogleAuthProvider() {
 
 
     } catch (error) {
-        console.log(error);
+        throw new Error(error?.message || "Failed to sign in with Google");
     }
 }
 
@@ -65,7 +65,7 @@ export async function handleFirebaseSignout() {
 
     }
     catch (error) {
-        console.log(error.message);
+        throw new Error(error?.message || "Failed to sign out");
     }
 }
 
@@ -79,7 +79,7 @@ export async function handleChangePassword(user, email, currentPassword, newPass
         await updatePassword(user, newPassword);
         console.log("Password Update Successfull");
     } catch (error) {
-        console.log(error.message);
+        throw new Error(error?.message || "Failed to update password");
     }
 
 }

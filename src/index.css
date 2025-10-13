@@ -126,11 +126,25 @@
     color: var(--color-foreground);
     box-shadow: 0 1px 2px rgba(36, 15, 15, 0.05);
     transition: border-color 150ms ease, box-shadow 150ms ease;
+    outline: 0;
   }
 
-  .input-field:focus-visible {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 4px rgba(56, 142, 60, 0.15);
+  .input-field:focus,
+  .input-field:focus-visible,
+  .input-field:focus-within {
+    border: 1px solid transparent !important; /* remove visible border line on focus */
+    outline: none !important;
+  }
+
+  /* Tame browser autofill UI to preserve design */
+  input.input-field:-webkit-autofill,
+  input.input-field:-webkit-autofill:hover,
+  input.input-field:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--color-foreground);
+    box-shadow: 0 0 0px 1000px #ffffff inset;
+    transition: background-color 9999s ease-in-out 0s;
+    border-color: transparent;
+    outline: 0;
   }
 
   .input-label {

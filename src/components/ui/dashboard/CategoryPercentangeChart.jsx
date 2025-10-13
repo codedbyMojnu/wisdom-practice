@@ -1,5 +1,4 @@
 import { ArcElement, Chart as ChartJS, Legend, Title, Tooltip } from "chart.js";
-import Card from "../../ui/primitives/Card";
 import { useMemo } from "react";
 import { useWisdomLogs } from "../../../contexts/WisdomLogsContext";
 import CategoryPercentage from "./CategoryPercentange";
@@ -66,7 +65,7 @@ export default function CategoryPercentageChart() {
   }, [wisdomLogs]);
 
   return (
-    <Card className="p-6">
+    <section className="glass-card p-6">
       <header className="mb-4 space-y-1">
         <h3 className="font-headline text-xl font-semibold text-foreground">
           Category Breakdown
@@ -98,6 +97,6 @@ export default function CategoryPercentageChart() {
           </ul>
         </div>
       )}
-    </Card>
+    </section>
   );
 }

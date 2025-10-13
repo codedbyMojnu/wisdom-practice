@@ -65,7 +65,7 @@ export default function ProfileData() {
                 defaultValue={userInfo?.displayName}
                 className={`w-full border ${
                   editMode ? "border-green-500" : "border-gray-300"
-                } px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary`}
+                } px-4 py-3 rounded-lg focus:outline-none`}
                 {...register("displayName", {
                   required: "Display Name is Required",
                 })}
@@ -84,7 +84,7 @@ export default function ProfileData() {
                 id="email"
                 name="email"
                 defaultValue={userInfo?.email}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
                 readOnly
               />
             </div>
@@ -101,7 +101,7 @@ export default function ProfileData() {
                 rows={4}
                 className={` w-full px-4 py-3 border ${
                   editMode ? "border-green-500" : "border-gray-300 "
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none`}
+                } rounded-lg focus:outline-none resize-none`}
                 defaultValue={userInfo?.about}
                 {...register("about", { required: "About Field is Required" })}
                 readOnly={!editMode}

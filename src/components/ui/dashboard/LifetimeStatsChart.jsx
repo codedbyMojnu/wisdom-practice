@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import Card from "../../ui/primitives/Card";
 import { useWisdomLogs } from "../../../contexts/WisdomLogsContext";
 import LifetimeStats from "./LifetimeStats";
 
@@ -62,7 +61,7 @@ export default function LifetimeStatsChart() {
   if (!userData) return null;
 
   return (
-    <Card className="p-6">
+    <div className="glass-card p-6">
       <div className="mb-4">
         <h3 className="font-headline text-2xl font-semibold text-foreground">
           Lifetime Stats
@@ -74,6 +73,6 @@ export default function LifetimeStatsChart() {
       <div className="relative flex h-[250px] w-full items-center justify-center rounded-md text-muted-foreground">
         <LifetimeStats data={userData} />
       </div>
-    </Card>
+    </div>
   );
 }

@@ -1,6 +1,6 @@
 import { ArcElement, Chart as ChartJS, Legend, Title, Tooltip } from "chart.js";
 import { useMemo } from "react";
-import { Doughnut } from "react-chartjs-2";
+import LazyDoughnut from "../../ui/primitives/charts/LazyDoughnut";
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
@@ -30,7 +30,7 @@ export default function CategoryPercentage({ categoryData }) {
 
   return (
     <div className="chart-container h-64">
-      <Doughnut data={memoizedData} options={options} />
+      <LazyDoughnut data={memoizedData} options={options} />
     </div>
   );
 }

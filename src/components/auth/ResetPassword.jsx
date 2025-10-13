@@ -16,14 +16,18 @@ export default function ResetPassword() {
   } = useForm();
 
   async function handleResetPassword(data) {
-    await handleChangePassword(
-      auth.currentUser, // real Firebase User object
-      auth.currentUser?.email,
-      data?.currentPassword,
-      data?.newPassword
-    );
-    toast("Password Reset Successfull");
-    reset();
+    try {
+      await handleChangePassword(
+        auth.currentUser, // real Firebase User object
+        auth.currentUser?.email,
+        data?.currentPassword,
+        data?.newPassword
+      );
+      toast.success("Password updated successfully");
+      reset();
+    } catch (error) {
+      toast.error(error?.message || "Failed to update password");
+    }
   }
   return (
     <section className="bg-[#F9F9EB] rounded-lg border shadow-sm">
@@ -50,7 +54,7 @@ export default function ResetPassword() {
               type="password"
               id="currentPassword"
               name="currentPassword"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
               {...register("currentPassword", {
                 required: "Current Password Is Required",
               })}
@@ -70,7 +74,7 @@ export default function ResetPassword() {
               type="password"
               id="newPassword"
               name="newPassword"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
               {...register("newPassword", {
                 required: "New Password is Required",
               })}
@@ -90,7 +94,7 @@ export default function ResetPassword() {
               type="password"
               id="confirmPassword"
               name="confirmPassword"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
               {...register("confirmPassword", {
                 required: "confirm password is required",
                 validate: (val) => {

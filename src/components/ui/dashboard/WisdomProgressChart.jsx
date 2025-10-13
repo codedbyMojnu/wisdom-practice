@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import Card from "../../ui/primitives/Card";
 import { useWisdomLogs } from "../../../contexts/WisdomLogsContext";
 import WisdomProgress from "./WisdomProgress";
 
@@ -96,7 +95,7 @@ export default function WisdomProgressChart() {
     labels.length === 0 || (applied.length === 0 && missed.length === 0);
 
   return (
-    <Card className="p-6 lg:col-span-2">
+    <div className="glass-card p-6 lg:col-span-2">
       <div className="mb-4 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h3 className="font-headline text-2xl font-semibold text-foreground">
@@ -143,6 +142,6 @@ export default function WisdomProgressChart() {
           <WisdomProgress labels={labels} applied={applied} missed={missed} />
         )}
       </div>
-    </Card>
+    </div>
   );
 }

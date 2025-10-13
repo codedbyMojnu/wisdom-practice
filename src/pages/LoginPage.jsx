@@ -3,7 +3,7 @@ import CommonLayout from "../components/layout/CommonLayout";
 
 export default function LoginPage() {
   return (
-    <CommonLayout showOverlay={false}>
+    <CommonLayout>
       <div className="mx-auto w-full max-w-md">
         <AuthForm mode="login" />
       </div>

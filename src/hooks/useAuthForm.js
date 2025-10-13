@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import {
     registerWithEmailPassword,
     signInWithEmailPassword,
@@ -26,14 +26,15 @@ export const useAuthForm = (mode) => {
         try {
             let user;
             if (mode === "signup") {
-                user = await registerWithEmailPassword(data.email, data.password);
+                const displayName = `${data.firstName ?? ""} ${data.lastName ?? ""}`.trim();
+                user = await registerWithEmailPassword(displayName, data.email, data.password);
             } else {
                 user = await signInWithEmailPassword(data.email, data.password);
             }
             setAuthData({ user });
             navigate("/dashboard");
         } catch (error) {
-            setError(error.message);
+            setError(error?.message || "Failed to authenticate. Please try again.");
         } finally {
             setLoading(false);
         }

@@ -7,7 +7,7 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-import { Bar } from "react-chartjs-2";
+import LazyBar from "../../ui/primitives/charts/LazyBar";
 
 ChartJS.register(
   CategoryScale,
@@ -63,7 +63,7 @@ const WisdomProgress = ({ labels = [], applied = [], missed = [] }) => {
     []
   );
 
-  return <Bar data={chartData} options={options} />;
+  return <LazyBar data={chartData} options={options} />;
 };
 
 export default WisdomProgress;

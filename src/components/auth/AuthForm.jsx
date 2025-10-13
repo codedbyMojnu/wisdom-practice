@@ -1,5 +1,7 @@
-import { Link } from "react-router";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useAuthForm } from "../../hooks/useAuthForm";
+import Button from "../ui/primitives/Button";
 import AuthFormFooter from "./form-elements/AuthFormFooter";
 import FormField from "./form-elements/FormField";
 import SocialLogin from "./form-elements/SocialLogin";
@@ -17,8 +19,27 @@ export default function AuthForm({ mode }) {
     handleGoogleSignIn,
   } = useAuthForm(mode);
 
+  useEffect(() => {
+    // Prevent any initial auto-focus outline from showing
+    const t = setTimeout(() => {
+      if (
+        document.activeElement &&
+        document.activeElement instanceof HTMLElement
+      ) {
+        if (document.activeElement.tagName === "INPUT") {
+          document.activeElement.blur();
+        }
+      }
+    }, 0);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
-    <div className="glass-card px-8 py-10">
+    <div className="glass-card relative overflow-hidden px-8 py-10">
+      <div
+        className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary/5 blur-xl"
+        aria-hidden="true"
+      />
       <header className="mb-8 text-center">
         <h2 className="font-headline text-3xl font-bold text-primary">
           {mode === "login" ? "Welcome Back" : "Create Your Account"}
@@ -90,7 +111,7 @@ export default function AuthForm({ mode }) {
                 type="checkbox"
                 id="terms"
                 name="terms"
-                className="mt-1 h-4 w-4 rounded border-border text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+                className="mt-1 h-4 w-4 rounded border-border text-primary focus-visible:outline-none"
                 {...register("terms", {
                   required: "You must agree to Our Terms and Service.",
                 })}
@@ -126,7 +147,7 @@ export default function AuthForm({ mode }) {
               id="remember-me"
               name="remember-me"
               type="checkbox"
-              className="h-4 w-4 rounded border-border text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+              className="h-4 w-4 rounded border-border text-primary focus-visible:outline-none"
             />
             Remember me
           </label>
@@ -142,17 +163,13 @@ export default function AuthForm({ mode }) {
           )}
         </div>
         <div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn btn-primary w-full"
-          >
+          <Button type="submit" disabled={loading} className="w-full" size="lg">
             {loading
               ? "Loading..."
               : mode === "login"
               ? "Sign in"
               : "Create an account"}
-          </button>
+          </Button>
         </div>
         <SocialLogin
           handleGoogleSignIn={handleGoogleSignIn}

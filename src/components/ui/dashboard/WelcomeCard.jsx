@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import Card from "../../ui/primitives/Card";
 import { useAuth } from "../../../hooks/useAuth";
 import { useWisdomLogs } from "../../../hooks/useWisdomLogs";
 import { getWisdomLogsFromDB } from "../../../services/fireStoreDB";
@@ -27,7 +26,7 @@ export default function WelcomeCard() {
 
   return (
     <div className="lg:col-span-3">
-      <Card className="relative overflow-hidden p-6 md:p-8">
+      <section className="glass-card relative overflow-hidden p-6 md:p-8">
         <div
           className="absolute inset-0 -z-0 bg-gradient-to-r from-primary/15 via-transparent to-transparent"
           aria-hidden="true"
@@ -55,7 +54,7 @@ export default function WelcomeCard() {
             Remember — a journey of a thousand miles begins with a single step.
           </p>
         </div>
-      </Card>
+      </section>
     </div>
   );
 }
