@@ -37,7 +37,9 @@ export default function App() {
 
               <Suspense
                 fallback={
-                  <div className="p-6 text-muted-foreground">Loading…</div>
+                  <div className="p-6 text-muted-foreground flex items-center justify-center">
+                    Loading…
+                  </div>
                 }
               >
                 <Routes>

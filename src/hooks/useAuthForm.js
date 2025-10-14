@@ -32,7 +32,7 @@ export const useAuthForm = (mode) => {
                 user = await signInWithEmailPassword(data.email, data.password);
             }
             setAuthData({ user });
-            navigate("/dashboard");
+            navigate("/dashboard/apply-today-wisdom");
         } catch (error) {
             setError(error?.message || "Failed to authenticate. Please try again.");
         } finally {
@@ -46,7 +46,7 @@ export const useAuthForm = (mode) => {
         try {
             const user = await signInWithGoogleAuthProvider();
             setAuthData({ user });
-            navigate("/dashboard");
+            navigate("/dashboard/apply-today-wisdom");
         } catch (error) {
             setError(error.message);
         } finally {
