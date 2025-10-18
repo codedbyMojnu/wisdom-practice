@@ -11,7 +11,6 @@ export default function ApplyTodayWisdom() {
   const { authData } = useAuth();
   const { wisdomsData, setWisdomsData } = useWisdoms();
   const { wisdomLogs, setWisdomLogs } = useWisdomLogs();
-  const [selectedWisdom, setSelectedWisdom] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [editWisdom, setEditWisdom] = useState(null);
   const [deleteDialog, setDeleteDialog] = useState({

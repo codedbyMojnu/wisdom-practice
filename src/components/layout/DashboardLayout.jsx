@@ -75,22 +75,6 @@ export default function DashboardLayout() {
           <ul className="space-y-2">
             <li>
               <NavLink
-                to="/dashboard/apply-today-wisdom"
-                className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-lg px-4 py-3 font-medium transition-colors ${
-                    isActive
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
-                  }`
-                }
-                onClick={closeSidebar}
-              >
-                <Templatesicon />
-                Apply Wisdom
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
                 end
                 to="/dashboard"
                 className={({ isActive }) =>
@@ -106,6 +90,23 @@ export default function DashboardLayout() {
                 Dashboard
               </NavLink>
             </li>
+            <li>
+              <NavLink
+                to="/dashboard/apply-today-wisdom"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 rounded-lg px-4 py-3 font-medium transition-colors ${
+                    isActive
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+                  }`
+                }
+                onClick={closeSidebar}
+              >
+                <Templatesicon />
+                Apply Wisdom
+              </NavLink>
+            </li>
+
             <li>
               <NavLink
                 to="/dashboard/daily-wisdom"
