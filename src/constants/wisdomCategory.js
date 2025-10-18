@@ -10,5 +10,11 @@ export const wisdomCategories = [
     "স্বাস্থ্য ও সুস্থতা সম্পর্কিত জ্ঞান (Health & Wellness Wisdom)",
     "নেতৃত্ব ও নৈতিক জ্ঞান (Leadership & Ethical Wisdom)",
     "ঐতিহাসিক জ্ঞান (Historical Wisdom)",
-    "পরিবেশগত জ্ঞান (Environmental Wisdom)"
+    "পরিবেশগত জ্ঞান (Environmental Wisdom)",
+    "মানসিকতা গঠন (Mindset)",
+    "শৃংখলা ও অভ্যাস (Discipline & Routine)",
+    "সম্পর্ক ও নেটওয়ার্কিং (Social Intelligence)",
+    "আত্মউন্নয়ন ও লক্ষ্য (Self-growth & Purpose)",
+
+
 ];
